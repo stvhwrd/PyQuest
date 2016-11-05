@@ -1,0 +1,8 @@
+{
+    "dev": {
+        "app_function": "handshake.app", 
+        "s3_bucket": "zappa-9pyz63ldm",
+        "aws_region": "us-east-1",
+        "keep_warm": false
+    }
+}
