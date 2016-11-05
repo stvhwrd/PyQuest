@@ -85,7 +85,8 @@ def call_api(api, params=None):
     finally:
         if debugOn:
             print '<<<<<<<<<RECEIVING<<<<<<<'
-            print json.dumps(response)
+            print 'Headers:\t' + str(r.headers)
+            print 'Body:   \t' + json.dumps(response)
             print '<<<<<<<<<<<<<<<<<<<<<<<<<'
         return response
 
