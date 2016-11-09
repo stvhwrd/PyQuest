@@ -1,1 +1,6 @@
 /utils.pyc
+/__init__.pyc
+/account.pyc
+/enumerations.pyc
+/market.pyc
+/questrade.log

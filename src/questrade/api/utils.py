@@ -22,13 +22,19 @@ import ConfigParser as Config
 import os
 import json
 import requests
+import logging
 from datetime import datetime, date, time
 from dateutil.tz import tzlocal
+from tinydb import TinyDB, Query
 
 config = Config.ConfigParser()
 config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.cfg'))
 api_version = config.get('Questrade', 'api_version')
-debugOn = config.getboolean('Questrade', 'debug')
+
+lookup_symbol_table = TinyDB(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'symbol_table.json'))
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'questrade.log'), level=logging.DEBUG)
+logger = logging.getLogger('questrade')
 
 
 def get_valid_token():
@@ -56,8 +62,7 @@ def call_api(api, params=None):
     token = get_valid_token()
     if token == None:
         response = {'message': 'no token'}
-        if debugOn:
-            print json.dumps(response)
+        print logging.info(json.dumps(response))
         return response
     
     authorization_value = token_ops.get_token_type(token) + ' ' + token_ops.get_access_token(token)
@@ -69,12 +74,11 @@ def call_api(api, params=None):
     
     response = {}
     try:
-        if debugOn:
-            print '>>>>>>>>>SENDING>>>>>>>>>'
-            print 'Headers:\t' + json.dumps(headers)
-            print 'Params: \t' + json.dumps(params)
-            print 'Calling:\t' + http_verb + ' ' + uri
-            print '>>>>>>>>>>>>>>>>>>>>>>>>>'
+        logging.info('>>>>>>>> SENDING >>>>>>>>')
+        logging.info('Headers:\t' + json.dumps(headers))
+        logging.info('Params: \t' + json.dumps(params))
+        logging.info('Calling:\t' + http_verb + ' ' + uri)
+        logging.info('>>>>>>>>>>>>>>>>>>>>>>>>>')
         
         r = requests.get(uri, headers=headers, params=params)
         response = r.json()
@@ -83,11 +87,10 @@ def call_api(api, params=None):
         response = {"error": e}
         
     finally:
-        if debugOn:
-            print '<<<<<<<<<RECEIVING<<<<<<<'
-            print 'Headers:\t' + str(r.headers)
-            print 'Body:   \t' + json.dumps(response)
-            print '<<<<<<<<<<<<<<<<<<<<<<<<<'
+        logging.info('<<<<<<<< RECEIVING <<<<<<')
+        logging.info('Headers:\t' + str(r.headers))
+        logging.info('Body:   \t' + json.dumps(response))
+        logging.info('<<<<<<<<<<<<<<<<<<<<<<<<<')
         return response
 
 
@@ -103,3 +106,27 @@ def iso_time():
 def iso_now():
     now = datetime.now(tzlocal())
     return now.isoformat()
+
+def lookup_symbol_id(symbol):
+    if isinstance(symbol, (int, long)):
+        return symbol
+    
+    q = Query()
+    records = lookup_symbol_table.search(q.symbol == symbol)
+    
+    if records == []:
+        params = {'prefix': symbol, 'offset': 0}
+        r = call_api('symbols/search', params)
+        stocks = r['symbols']
+        if len(stocks) > 0:
+            stock = stocks[0]
+            if 'symbolId' in stock:
+                symbol_id = stock['symbolId']
+                lookup_symbol_table.insert({'symbol_id': symbol_id, 'symbol': symbol})
+                
+    elif len(records) > 0:
+        record = records[0]
+        symbol_id = record.get('symbol_id')
+            
+    return symbol_id
+
