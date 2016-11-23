@@ -1,4 +1,4 @@
-# Questrade API Python Wrapper [![Questrade](http://www.questrade.com/Resources/images/global/header/questrade_logo.svg)](http://www.questrade.com/)[![Python](https://www.python.org/static/community_logos/python-logo.png)](https://www.python.org/)
+# Questrade API Python Wrapper [![Questrade](https://pbs.twimg.com/profile_images/3121643627/ab59bf9e1b51307feb88a4f07727eff1_400x400.png =100x)](http://www.questrade.com/)[![Python](https://www.python.org/static/community_logos/python-logo.png)](https://www.python.org/)
 A Python wrapper for the Questrade API
 
 [Questrade](http://www.questrade.com/) is a leading Canadian Discount Brokerage with the goal of allowing investors to reach their financial independence.
