@@ -2,7 +2,7 @@
 
 @summary: A wrapper for the Questrade Market Restful APIs
 
-@see http://www.questrade.com/api/documentation/getting-started
+@see: http://www.questrade.com/api/documentation/getting-started
 
 @copyright: 2016
 @author: Peter Cinat
@@ -19,36 +19,76 @@
    limitations under the License.
 '''
 
-import utils
-from questrade.api import enumerations
+
+from questrade.api import enumerations, utils
 
 
 __api_ops__ = {
-    'symbols': 'symbols/{0}',
+    'symbol': 'symbols/{0}',
+    'symbols': 'symbols',
     'search': 'symbols/search',
     'options': 'symbols/{0}/options',
     'markets': 'markets',
-    'quotes': 'markets/quotes/{0}',
+    'quote': 'markets/quotes/{0}',
+    'quotes': 'markets/quotes',
     'moptions': 'markets/quotes/options',
     'strategies': 'markets/quotes/strategies',
     'candles': 'markets/candles/{0}',
 }
 
 
-def symbols(id_):
+def symbol(id_):
     '''
-    Retrieves detailed information about one or more symbol.
+    Retrieves detailed information about one symbol.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-id
+    @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-id
     '''
-    return utils.call_api(__api_ops__['symbols'].format(id_))
+    return utils.call_api(__api_ops__['symbol'].format(id_))
+
+
+def symbolIds(ids):
+    '''
+    Retrieves detailed information about one or more symbols.
+    @note: ids must be a list or comma separated string
+    
+    @see:  http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-id
+    '''
+    syms = ''
+    if isinstance(ids, list):
+        for s in ids:
+            syms += str(s) +','
+        syms = syms[:-1]  # remove last ,
+    else:
+        syms = ids
+        
+    params = {'ids': syms}
+    return utils.call_api(__api_ops__['symbols'], params)
+
+
+def symbolNames(names):
+    '''
+    Retrieves detailed information about one or more symbols.
+    @note: names must be a list or comma separated string
+    
+    @see:  http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-id
+    '''
+    syms = ''
+    if isinstance(names, list):
+        for s in names:
+            syms += str(s) + ','
+        syms = syms[:-1]  # remove last ,
+    else:
+        syms = names
+        
+    params = {'names': syms}
+    return utils.call_api(__api_ops__['symbols'], params)
 
 
 def symbols_search(prefix, offset='0'):
     '''
     Retrieves symbol(s) using several search criteria.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-search
+    @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-search
     '''
     params = {'prefix': prefix,
               'offset': offset}
@@ -59,7 +99,7 @@ def symbols_options(id_):
     '''
     Retrieves an option chain for a particular underlying symbol.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-id-options
+    @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-id-options
     '''
     return utils.call_api(__api_ops__['options'].format(id_))
 
@@ -68,25 +108,45 @@ def markets():
     '''
     Retrieves information about supported markets.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/market-calls/markets
+    @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets
     '''
     return utils.call_api(__api_ops__['markets'])
 
 
-def markets_quotes(id_):
+def markets_quote(id_):
+    '''
+    Retrieves a single Level 1 market data quote for one symbol.
+    
+    @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-id
+    '''
+    return utils.call_api(__api_ops__['quote'].format(id_))
+
+
+def markets_quotes(ids):
     '''
     Retrieves a single Level 1 market data quote for one or more symbols.
+    @note: ids must be a list or comma separated string
     
-    @see http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-id
+    @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-id
     '''
-    return utils.call_api(__api_ops__['quotes'].format(id_))
+    syms = ''
+    if isinstance(ids, list):
+        for s in ids:
+            syms += str(s) + ','
+        syms = syms[:-1]  # remove last ,
+    else:
+        syms = ids
+    
+    params = {'ids': syms}
+    return utils.call_api(__api_ops__['quotes'], params)
 
 
 def markets_quotes_options(option_id_filters, ids):
     '''
     Retrieves a single Level 1 market data quote and Greek data for one or more option symbols.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-options
+    @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-options
+    @todo: Need to finish implementation
     '''
     params = {'filters': option_id_filters,
               'ids': ids}
@@ -97,8 +157,8 @@ def markets_quotes_strategies():
     '''
     Retrieve a calculated L1 market data quote for a single or many multi-leg strategies
     
-    @see http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-strategies
-    @todo Need to finish implementation
+    @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-strategies
+    @todo: Need to finish implementation
     '''
     return utils.call_api(__api_ops__['strategies'])
 
@@ -108,7 +168,7 @@ def markets_candles(id_, start_time=None, end_time=None, interval=None):
     Retrieves historical market data in the form of OHLC candlesticks for a specified symbol.
     This call is limited to returning 2,000 candlesticks in a single response.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-candles-id
+    @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-candles-id
     '''
     if start_time == None:
         start_time = utils.iso_now()
@@ -125,4 +185,4 @@ def markets_candles(id_, start_time=None, end_time=None, interval=None):
 
 
 if __name__ == '__main__':
-    markets_candles('23364','2016-10-08T01:00-05:00','2016-11-08T01:00-05:00')
+    markets_quotes('8049')

@@ -8,7 +8,7 @@
 @note: The locally stored token is placed in the user's home directory under filename
     'questrade_token.json'.
     
-    Windows:    C:\Users\<username>\questrade_token.json
+    Windows:    C:\\Users\\<username>\\questrade_token.json
     OS X:       /Users/<username>/questrade_token.json
     Linux:      /home/<username>/questrade_token.json
 @note: This module uses Selenium to automatically launch a browser that allows the user
@@ -36,7 +36,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from ConfigParser import SafeConfigParser
+from configparser import SafeConfigParser
 import os
 import json
 import requests
@@ -86,7 +86,7 @@ def login():
         
         
     except TimeoutException:
-        print 'Time expired while attempting to login'
+        print('Time expired while attempting to login')
         
     finally:
         browser.quit()

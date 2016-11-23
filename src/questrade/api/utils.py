@@ -18,7 +18,7 @@
 '''
 
 import questrade.token.token_ops as token_ops
-import ConfigParser as Config
+import configparser as Config
 import os
 import json
 import requests
@@ -62,7 +62,7 @@ def call_api(api, params=None):
     token = get_valid_token()
     if token == None:
         response = {'message': 'no token'}
-        print logging.info(json.dumps(response))
+        logging.info(json.dumps(response))
         return response
     
     authorization_value = token_ops.get_token_type(token) + ' ' + token_ops.get_access_token(token)
@@ -83,8 +83,14 @@ def call_api(api, params=None):
         r = requests.get(uri, headers=headers, params=params)
         response = r.json()
             
+    except ValueError as e:
+        response = {"ValueError": e}
+    
+    except TypeError as e:
+        response = {"TypeError": e}
+         
     except requests.exceptions.RequestException as e:
-        response = {"error": e}
+        response = {"RequestException": e}
         
     finally:
         logging.info('<<<<<<<< RECEIVING <<<<<<')
@@ -108,7 +114,7 @@ def iso_now():
     return now.isoformat()
 
 def lookup_symbol_id(symbol):
-    if isinstance(symbol, (int, long)):
+    if isinstance(symbol, (int)):
         return symbol
     
     q = Query()

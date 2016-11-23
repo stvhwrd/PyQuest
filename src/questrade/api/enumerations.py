@@ -38,6 +38,12 @@ class Exchange:
     OTCBB = 'OTCBB'
 
 
+class OrderStateFilterType:
+    All = 'All'
+    Open = 'Open'
+    Closed = 'Closed'
+    
+
 class OrderAction:
     Buy = 'Buy'
     Sell = 'Sell'
@@ -71,3 +77,9 @@ class HistoricalDataGranularity:
     OneWeek = 'OneWeek'
     OneMonth = 'OneMonth'
     OneYear = 'OneYear'
+
+
+class OptionType:
+    Call = 'Call'
+    Put = 'Put'
+

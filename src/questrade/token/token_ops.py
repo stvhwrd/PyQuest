@@ -9,10 +9,10 @@
 @note: The locally stored token is assumed to be located in the user's home directory
     under the filename 'questrade_token.json'.
     
-    Windows:    C:\Users\<username>\questrade_token.json
+    Windows:    C:\\Users\\<username>\\questrade_token.json
     OS X:       /Users/<username>/questrade_token.json
     Linux:      /home/<username>/questrade_token.json
-
+    
 @copyright: 2016
 @author: Peter Cinat
 @license: Licensed under the Apache License, Version 2.0 (the "License");
@@ -118,6 +118,7 @@ def is_valid_token(token):
     finally:
         return is_valid
 
+
 def is_token_expired(token):
     if token == None:
         expires_at = get_token_value('expires_at')
@@ -131,7 +132,7 @@ def is_token_expired(token):
 
 
 def print_token(token):
-    print json.dumps(token)
+    print(json.dumps(token))
 
 
 

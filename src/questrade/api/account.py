@@ -2,7 +2,7 @@
 
 @summary: A wrapper for the Questrade Account Restful APIs
 
-@see http://www.questrade.com/api/documentation/getting-started
+@see: http://www.questrade.com/api/documentation/getting-started
 
 @copyright: 2016
 @author: Peter Cinat
@@ -19,7 +19,8 @@
    limitations under the License.
 '''
 
-import utils
+from questrade.api import utils
+import questrade.api.enumerations as enums
 
 
 __api_ops__ = {
@@ -37,7 +38,7 @@ def time():
     '''
     Retrieves current server time.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/account-calls/time
+    @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/time
     '''
     return utils.call_api(__api_ops__['time'])
 
@@ -46,7 +47,7 @@ def accounts():
     '''
     Retrieves the accounts associated with the user on behalf of which the API client is authorized.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts
+    @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts
     '''
     return utils.call_api(__api_ops__['accounts'])
 
@@ -55,7 +56,7 @@ def accounts_positions(id_):
     '''
     Retrieves positions in a specified account.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-positions
+    @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-positions
     '''
     return utils.call_api(__api_ops__['positions'].format(id_))
 
@@ -64,34 +65,52 @@ def accounts_balances(id_):
     '''
     Retrieves per-currency and combined balances for a specified account.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-balances
+    @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-balances
     '''
     return utils.call_api(__api_ops__['balances'].format(id_))
 
 
-def accounts_executions(id_):
+def accounts_executions(id_, start_time=None, end_time=None):
     '''
     Retrieves executions for a specific account.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-executions
+    @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-executions
     '''
-    return utils.call_api(__api_ops__['executions'].format(id_))
+    if start_time == None:
+        start_time = utils.iso_now()
+    if end_time == None:
+        end_time = utils.iso_now()
+    
+    params = {'startTime': start_time,
+              'endTime': end_time}
+    return utils.call_api(__api_ops__['executions'].format(id_), params)
 
 
-def accounts_orders(id_):
+def accounts_orders(id_, start_time=None, end_time=None, state_filter=None, order_id=0):
     '''
     Retrieves orders for specified account
     
-    @see http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-orders
+    @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-orders
     '''
-    return utils.call_api(__api_ops__['orders'].format(id_))
+    if start_time == None:
+        start_time = utils.iso_now()
+    if end_time == None:
+        end_time = utils.iso_now()
+    if state_filter == None:
+        state_filter = enums.OrderStateFilterType.All
+    
+    params = {'startTime': start_time,
+              'endTime': end_time,
+              'stateFilter': state_filter,
+              'orderId': order_id}
+    return utils.call_api(__api_ops__['orders'].format(id_), params)
 
 
 def accounts_activities(id_, start_time=None, end_time=None):
     '''
     Retrieve account activities, including cash transactions, dividends, trades, etc.
     
-    @see http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-activities
+    @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-activities
     '''
     if start_time == None:
         start_time = utils.iso_now()
