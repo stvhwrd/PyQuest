@@ -31,6 +31,7 @@ This package includes the implemention for an AWS https microservice that I host
  - Click on the Authorize link
  - Login with your Questrade credentials
  - Accept the Authorization Request to receive an access token from a Questrade App.
+
 The above steps are programmatically followed when leveraging the Python API wrappers in this package.
 
 
