@@ -14,8 +14,8 @@ This package currently includes the following features:
 * A helper to iniciate the OAuth 2.0 handshaking process with a popup web browser
 * Optimized calls to request new access tokens via refresh tokens when available
 * Error Handling and logging
-* Streaming services
 * Wrappers for all Account and Market calls
+* Streaming services
 * [xlwings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from Microsoft Excel
 * A local database to minimize API callouts when possible so that rate limits are not hit
 
@@ -27,11 +27,11 @@ This package currently includes the following features:
 
 ### How it works
 This package includes the implemention for an AWS https microservice that I host to retrieve an initial access token.  Once an initial access token is obtained, subsequest Questrade API calls can be made.  This microservice is safe to use and will never store any access tokens on any server.  You can manually use this microservice freely to obtain your personalized access token as follows:
- - Point your web browser https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize
+ - Point your web browser to  https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize
  - Login with your Questrade credentials
  - Accept the Authorization Request to receive an access token from Questrade.
 
-The above steps are programmatically followed when leveraging the Python API wrappers in this package.
+The above steps are programmatically followed when leveraging the Python API wrappers in this package.  In addition, when using the framework implemented in this package, new access tokens are automatically obtained after they've expired by using a refresh token when possible.
 
 
 ### Operating Systems
@@ -47,5 +47,5 @@ Unless required by applicable law or agreed to in writing, software distributed 
 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
-   [XLWings]: <https://www.xlwings.org/>
+   [xlwings]: <https://www.xlwings.org/>
    
