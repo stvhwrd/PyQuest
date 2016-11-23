@@ -16,7 +16,7 @@ This package currently includes the following features:
 * Error Handling and logging
 * Streaming services
 * Wrappers for all Account and Market calls
-* [XLWings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from Microsoft Excel
+* [xlwings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from Microsoft Excel
 * A local database to minimize API callouts when possible so that rate limits are not hit
 
 
@@ -26,7 +26,7 @@ This package currently includes the following features:
 
 
 ### How it works
-This package includes the implemention for an AWS https microservice that I host to retrieve an initial access token.  Once an initial access token is obtained, subsequest Questrade API calls can be made.  This microservice is safe to use and will never store any access tokens on any server.  You can manually use this microservice freely by following these steps:
+This package includes the implemention for an AWS https microservice that I host to retrieve an initial access token.  Once an initial access token is obtained, subsequest Questrade API calls can be made.  This microservice is safe to use and will never store any access tokens on any server.  You can manually use this microservice freely to obtain your personalized access token as follows:
  - Point your web browser https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize
  - Login with your Questrade credentials
  - Accept the Authorization Request to receive an access token from Questrade.
