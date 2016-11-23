@@ -1,9 +1,9 @@
-# Questrade API Python Wrapper [![Python](https://www.python.org/static/community_logos/python-logo.png)](https://www.python.org/)
+# Questrade API Python Wrapper [![Questrade](http://www.questrade.com/Resources/images/global/header/questrade_logo.svg)](http://www.questrade.com/)[![Python](https://www.python.org/static/community_logos/python-logo.png)](https://www.python.org/)
 A Python wrapper for the Questrade API
 
 [Questrade](http://www.questrade.com/) is a leading Canadian Discount Brokerage with the goal of allowing investors to reach their financial independence.
 
-Python is a leading programming language with a rich set of packages to analyze financial data.
+[Python](https://www.python.org/) is a leading programming language with a rich set of packages to analyze financial data.
 
 This package aims to bridge the gap for developers so that they can create pythonic investing applications with Questrade's Restful API.
 
