@@ -17,7 +17,7 @@ This package currently includes the following features:
 * Streaming services
 * Wrappers for all Account and Market calls
 * [XLWings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from Microsoft Excel
-* A local database that optimizes API callouts to a minimun so that rate limits are not hit
+* A local database to minimize API callouts when possible so that rate limits are not hit
 
 
 ### Requirements
