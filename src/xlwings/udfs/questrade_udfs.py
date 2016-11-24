@@ -34,14 +34,14 @@ __unavailable_data__ = 'na'
 
 
 @xw.func
-def get_server_time():
+def xw_GetServerTime():
     r = api_account.time()
     t = r.get('time')
-    return isoDateTimeToExcel(t)
+    return xw_isoDateTimeToExcel(t)
 
 
 @xw.func
-def get_accounts_userid():
+def xw_GetAccountsUserid():
     r = api_account.accounts()
     return r.get('userId')
 
@@ -49,7 +49,7 @@ def get_accounts_userid():
 @xw.func
 @xw.arg('headers', ndim=1)
 @xw.ret(expand='table')
-def get_accounts(headers):
+def xw_GetAccounts(headers):
     r = api_account.accounts()
     accounts = r.get('accounts')
     
@@ -60,7 +60,7 @@ def get_accounts(headers):
 @xw.arg('accountId')
 @xw.arg('headers', ndim=1)
 @xw.ret(expand='table')
-def get_account_positions(accountId, headers):   
+def xw_GetAccountPositions(accountId, headers):   
     r = api_account.accounts_positions(accountId)
     positions = r.get('positions')
     
@@ -70,7 +70,7 @@ def get_account_positions(accountId, headers):
 @xw.func
 @xw.arg('headers', ndim=1)
 @xw.ret(expand='table')
-def get_markets(headers):    
+def xw_GetMarkets(headers):    
     r = api_market.markets()
     markets = r.get('markets')
     
@@ -81,7 +81,7 @@ def get_markets(headers):
 @xw.arg('symbols', ndim=1)
 @xw.arg('headers', ndim=1)
 @xw.ret(expand='table')
-def get_stocks(symbols, headers):
+def xw_GetStocks(symbols, headers):
     r = api_market.symbolNames(symbols)
     stocks = r.get('symbols')
     
@@ -92,8 +92,8 @@ def get_stocks(symbols, headers):
 @xw.arg('symbols', ndim=1)
 @xw.arg('headers', ndim=1)
 @xw.ret(expand='table')
-def get_quotes(symbols, headers):
-    ids = lookup_symbol_ids(symbols)
+def xw_GetQuotes(symbols, headers):
+    ids = xw_LookupSymbolIds(symbols)
     r = api_market.markets_quotes(ids)
     stocks = r.get('quotes')
     
@@ -107,8 +107,8 @@ def get_quotes(symbols, headers):
 @xw.arg('interval')
 @xw.arg('headers', ndim=1)
 @xw.ret(expand='table')
-def get_candles(symbol, start_time, end_time, interval, headers):
-    symbol_id = lookup_symbol_id(symbol)
+def xw_GetCandles(symbol, start_time, end_time, interval, headers):
+    symbol_id = xw_LookupSymbolId(symbol)
     r = api_market.markets_candles(symbol_id, start_time, end_time, interval)
     candles = r.get('candles')
     
@@ -122,7 +122,7 @@ def __table__(l, h):
         for j in h:
             v = i.get(j, __unavailable_data__)
             if j in __date_conversion_keys__:
-                v = isoDateTimeToExcel(v)
+                v = xw_isoDateTimeToExcel(v)
             r.append(v)
         
         result.append(r)
@@ -132,13 +132,13 @@ def __table__(l, h):
 
 @xw.func
 @xw.arg('symbol')
-def get_stock_id(symbol):
-    return lookup_symbol_id(symbol)
+def xw_GetStockId(symbol):
+    return xw_LookupSymbolId(symbol)
 
 
 @xw.func
 @xw.arg('symbol')
-def lookup_symbol_id(symbol):
+def xw_LookupSymbolId(symbol):
     if isinstance(symbol, (int)):
         return symbol
     
@@ -164,16 +164,16 @@ def lookup_symbol_id(symbol):
 @xw.func
 @xw.arg('symbols', ndim=1)
 @xw.ret(expand='right')
-def lookup_symbol_ids(symbols):
+def xw_LookupSymbolIds(symbols):
     ids = []
     for s in symbols:
-        ids.append(lookup_symbol_id(s))
+        ids.append(xw_LookupSymbolId(s))
     
     return ids   
 
 
 @xw.func
-def isoDateTimeToExcel(dt):
+def xw_isoDateTimeToExcel(dt):
     if dt == None:
         return ''
     elif dt == '':
@@ -187,9 +187,8 @@ def isoDateTimeToExcel(dt):
     delta_days = (input_day - reference_day).days + 2  # Add 2 because excel start date is 1900-01-00 (not 1900-01-01) and need to add 1 for the sub arithmetic
     
     input_time = str(input_day.time())
-    input_secs = sum(float(x) * 60 ** i for i,x in enumerate(reversed(input_time.split(":"))))
+    input_secs = sum(float(x) * 60.0 ** i for i, x in enumerate(reversed(input_time.split(":"))))
     
     input_secs_pct_of_day = input_secs / 86400.0
     
     return delta_days + input_secs_pct_of_day
-    
