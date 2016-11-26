@@ -25,13 +25,12 @@ import requests
 import logging
 from datetime import datetime, date, time
 from dateutil.tz import tzlocal
-from tinydb import TinyDB, Query
+
 
 config = Config.ConfigParser()
 config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.cfg'))
 api_version = config.get('Questrade', 'api_version')
 
-lookup_symbol_table = TinyDB(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'symbol_table.json'))
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'questrade.log'), level=logging.DEBUG)
 logger = logging.getLogger('questrade')
@@ -112,27 +111,3 @@ def iso_time():
 def iso_now():
     now = datetime.now(tzlocal())
     return now.isoformat()
-
-
-def lookup_symbol_id(symbol):
-    if isinstance(symbol, (int)):
-        return symbol
-    
-    q = Query()
-    records = lookup_symbol_table.search(q.symbol == symbol)
-    
-    if records == []:
-        params = {'prefix': symbol, 'offset': 0}
-        r = call_api('symbols/search', params)
-        stocks = r['symbols']
-        if len(stocks) > 0:
-            stock = stocks[0]
-            if 'symbolId' in stock:
-                symbol_id = stock['symbolId']
-                lookup_symbol_table.insert({'symbol_id': symbol_id, 'symbol': symbol})
-                
-    elif len(records) > 0:
-        record = records[0]
-        symbol_id = record.get('symbol_id')
-            
-    return symbol_id

@@ -21,14 +21,12 @@
 '''
 
 import xlwings as xw
-import os
 import datetime
 import dateutil.parser
 import questrade.api.account as api_account
 from questrade.api import market as api_market
-from tinydb import TinyDB, Query
+from sqlite import db_utils
 
-__lookup_symbol_table__ = TinyDB(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'symbol_table.json'))
 __date_conversion_keys__ = ('time', 'dividendDate', 'exDate', 'extendedStartTime', 'extendedEndTime', 'startTime', 'endTime', 'start', 'end')
 __unavailable_data__ = 'na'
 
@@ -141,23 +139,18 @@ def xw_GetStockId(symbol):
 def xw_LookupSymbolId(symbol):
     if isinstance(symbol, (int)):
         return symbol
-    
-    q = Query()
-    records = __lookup_symbol_table__.search(q.symbol == symbol)
-    
-    if records == []:
+
+    if db_utils.is_symbol(symbol):
+        symbol_id = db_utils.get_symbol_id(symbol)
+    else:
         r = api_market.symbols_search(symbol)
         stocks = r.get('symbols')
         if len(stocks) > 0:
             stock = stocks[0]
             if 'symbolId' in stock:
                 symbol_id = stock.get('symbolId')
-                __lookup_symbol_table__.insert({'symbol_id': symbol_id, 'symbol': symbol})
-                
-    elif len(records) > 0:
-        record = records[0]
-        symbol_id = record.get('symbol_id')
-            
+                db_utils.add_symbol(symbol, symbol_id)
+        
     return symbol_id
 
 
