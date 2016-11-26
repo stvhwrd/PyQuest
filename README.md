@@ -21,7 +21,7 @@ This package currently includes the following features:
 
 
 ### Requirements
-- Python 3 or above
+- Python 2.7.11 - Note that 2.7 is used because of the extensive financial packages that exist for Python 2.7 as opposed to 3.5
 - Questrade user account
 
 
@@ -38,6 +38,12 @@ The above steps are programmatically followed when leveraging the Python API wra
 This package has been tested to work on Windows 7 or above.  Most of the features will also work on Mac OS X and Linux operating systems but have not been tested.
 
 
+### Development Setup
+[virtualenv] is probably what you want to use during development for your project.  Once you have Python 2.7 and your virtualenv activated, enter the following command
+`pip install requirements.txt`
+This will download and install all the Python package dependencies that are needed.
+
+
 ### License
 Licensed under the Apache License, Version 2.0 (the "License"). You may obtain a copy of the License at
   http://www.apache.org/licenses/LICENSE-2.0
@@ -48,4 +54,5 @@ Unless required by applicable law or agreed to in writing, software distributed 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
    [xlwings]: <https://www.xlwings.org/>
+   [virtualenv]: <http://docs.python-guide.org/en/latest/dev/virtualenvs/>
    

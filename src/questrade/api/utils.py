@@ -113,6 +113,7 @@ def iso_now():
     now = datetime.now(tzlocal())
     return now.isoformat()
 
+
 def lookup_symbol_id(symbol):
     if isinstance(symbol, (int)):
         return symbol
@@ -135,4 +136,3 @@ def lookup_symbol_id(symbol):
         symbol_id = record.get('symbol_id')
             
     return symbol_id
-
