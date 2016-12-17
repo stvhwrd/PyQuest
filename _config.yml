@@ -1,8 +1,0 @@
-title: Questrade API Python Wrapper
-description: A Python wrapper for the Questrade Restful API
-google_analytics: 
-show_downloads: true
-theme: jekyll-theme-time-machine
-
-gems:
-  - jekyll-mentions
