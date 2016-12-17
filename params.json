@@ -1,6 +1,0 @@
-{
-  "name": "Questrade API Python Wrapper",
-  "tagline": "A Python wrapper for the Questrade Restful API",
-  "body": "### Welcome to PyQuestrade.\r\nPyQuestrade is a Python wrapper of the Questrade REST API.<br>\r\n[Questrade](http://www.questrade.com/) is a leading Canadian Discount Brokerage with the goal of allowing investors reach financial independence.<br>\r\nPython is a leading programming language with a rich set of packages to analyze financial data\r\nPyQuestrade aims to bridge the gap for developers so that they can create pythonic investing applications\r\n\r\n\r\n### Authors and Contributors\r\nThis project is currently being maintained by Peter Cinat (@pcinat).",
-  "note": "Don't delete this file! It's used internally to help with page regeneration."
-}
