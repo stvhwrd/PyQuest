@@ -48,6 +48,6 @@ txaio==2.5.2
 Unidecode==0.4.19
 Werkzeug==0.11.11
 wsgi-request-logger==0.4.6
-xlwings==0.10.0
+xlwings==0.10.1
 zappa==0.30.1
 zope.interface==4.3.2
