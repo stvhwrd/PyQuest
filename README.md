@@ -1,5 +1,10 @@
-# Questrade API Python Wrapper  <a href="https://questrade.com"><img src="https://pbs.twimg.com/profile_images/3121643627/ab59bf9e1b51307feb88a4f07727eff1_400x400.png" width="75" height="75" /></a>  [![Python](https://www.python.org/static/community_logos/python-logo.png)](https://www.python.org/)
+# Questrade API Python Wrapper
 A Python wrapper for Questrade's Restful API
+
+
+<a href="https://questrade.com"><img src="https://pbs.twimg.com/profile_images/3121643627/ab59bf9e1b51307feb88a4f07727eff1_400x400.png" width="75" height="75" /></a>  [![Python](https://www.python.org/static/community_logos/python-logo.png)](https://www.python.org/)
+
+
 
 [Questrade](http://www.questrade.com/) is a leading Canadian Discount Brokerage with the goal of allowing investors reach their financial independence.
 
@@ -10,28 +15,28 @@ This package aims to bridge the gap for developers to create pythonic investing 
 
 ### Features
 This package currently includes the following features:
-* OAuth 2.0 API requests via HTTPS (TLS)
-* A helper to iniciate the OAuth 2.0 handshaking process with a popup web browser to obtain an access key
-* Optimized calls to request new access tokens via refresh tokens when available
-* Error handling and logging
-* Wrappers for all Questrade Account and Market calls
-* Streaming quotes
-* [xlwings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from Microsoft Excel
-* A local SQLite database to minimize API callouts when possible so that rate limits are not hit
+ * OAuth 2.0 API requests via HTTPS (TLS)
+ * A helper to iniciate the OAuth 2.0 handshaking process with a popup web browser to obtain an access key
+ * Optimized calls to request new access tokens via refresh tokens when available
+ * Error handling and logging
+ * Wrappers for all Questrade Account and Market calls
+ * Streaming quotes
+ * [xlwings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from Microsoft Excel
+ * A local SQLite database to minimize API callouts when possible so that rate limits are not hit
 
 
 ### How it works
 This package includes the implemention for an AWS https microservice that I host to retrieve an initial access token.  Once an initial access token is obtained, subsequest Questrade API calls can be made.  This microservice is safe to use and will never store any access tokens on any server.  You can manually use this microservice freely to obtain your personalized access token as follows:
- 1. Point your web browser to  https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize
- 2. Login with your Questrade credentials
- 3. Accept the Authorization Request to receive an access token from Questrade.
+1. Point your web browser to  https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize
+2. Login with your Questrade credentials
+3. Accept the Authorization Request to receive an access token from Questrade.
 
 The above steps are programmatically followed when leveraging the Python API wrappers in this package.  In addition, when using this framework, new access tokens are automatically obtained after they've expired by using a refresh token when possible.
 
 
 ### Requirements
-- Python 2.7.11 - Note that 2.7 is used because of the extensive financial packages that exist for Python 2.7 as opposed to 3.5
-- Questrade user account
+ - Python 2.7.11 - Note that 2.7 is used because of the extensive financial packages that exist for Python 2.7 as opposed to 3.5
+ - Questrade user account
 
 
 ### Operating Systems
@@ -50,19 +55,19 @@ This will download and install all the required Python package dependencies that
 
 ### Technologies
 Some of the technologies leveraged in this project are the following:
-- Flask
-- AWS Lambda + API Gateway
-- OAuth2
-- Zappa
-- requests
-- WebSockets
-- Selenium
-- Twisted
-- Threading
-- xlwings
-- ctypes
-- SQLite
-- RTD (real-time data for Excel)
+ - Flask
+ - AWS Lambda + API Gateway
+ - OAuth2
+ - Zappa
+ - requests
+ - WebSockets
+ - Selenium
+ - Twisted
+ - Threading
+ - xlwings
+ - ctypes
+ - SQLite
+ - RTD (real-time data for Excel)
 
 
 
