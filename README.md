@@ -1,23 +1,32 @@
 # Questrade API Python Wrapper  <a href="https://questrade.com"><img src="https://pbs.twimg.com/profile_images/3121643627/ab59bf9e1b51307feb88a4f07727eff1_400x400.png" width="75" height="75" /></a>  [![Python](https://www.python.org/static/community_logos/python-logo.png)](https://www.python.org/)
-A Python wrapper for the Questrade API
+A Python wrapper for Questrade's Restful API
 
-[Questrade](http://www.questrade.com/) is a leading Canadian Discount Brokerage with the goal of allowing investors to reach their financial independence.
+[Questrade](http://www.questrade.com/) is a leading Canadian Discount Brokerage with the goal of allowing investors reach their financial independence.
 
 [Python](https://www.python.org/) is a leading programming language with a rich set of packages to analyze financial data.
 
-This package aims to bridge the gap for developers so that they can create pythonic investing applications with Questrade's Restful API.
+This package aims to bridge the gap for developers to create pythonic investing applications with Questrade's Restful API.
 
 
 ### Features
 This package currently includes the following features:
 * OAuth 2.0 API requests via HTTPS (TLS)
-* A helper to iniciate the OAuth 2.0 handshaking process with a popup web browser
+* A helper to iniciate the OAuth 2.0 handshaking process with a popup web browser to obtain an access key
 * Optimized calls to request new access tokens via refresh tokens when available
-* Error Handling and logging
-* Wrappers for all Account and Market calls
-* Streaming services
+* Error handling and logging
+* Wrappers for all Questrade Account and Market calls
+* Streaming quotes
 * [xlwings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from Microsoft Excel
-* A local database to minimize API callouts when possible so that rate limits are not hit
+* A local SQLite database to minimize API callouts when possible so that rate limits are not hit
+
+
+### How it works
+This package includes the implemention for an AWS https microservice that I host to retrieve an initial access token.  Once an initial access token is obtained, subsequest Questrade API calls can be made.  This microservice is safe to use and will never store any access tokens on any server.  You can manually use this microservice freely to obtain your personalized access token as follows:
+ 1. Point your web browser to  https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize
+ 2. Login with your Questrade credentials
+ 3. Accept the Authorization Request to receive an access token from Questrade.
+
+The above steps are programmatically followed when leveraging the Python API wrappers in this package.  In addition, when using this framework, new access tokens are automatically obtained after they've expired by using a refresh token when possible.
 
 
 ### Requirements
@@ -25,23 +34,36 @@ This package currently includes the following features:
 - Questrade user account
 
 
-### How it works
-This package includes the implemention for an AWS https microservice that I host to retrieve an initial access token.  Once an initial access token is obtained, subsequest Questrade API calls can be made.  This microservice is safe to use and will never store any access tokens on any server.  You can manually use this microservice freely to obtain your personalized access token as follows:
- - Point your web browser to  https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize
- - Login with your Questrade credentials
- - Accept the Authorization Request to receive an access token from Questrade.
-
-The above steps are programmatically followed when leveraging the Python API wrappers in this package.  In addition, when using the framework implemented in this package, new access tokens are automatically obtained after they've expired by using a refresh token when possible.
-
-
 ### Operating Systems
 This package has been tested to work on Windows 7 or above.  Most of the features will also work on Mac OS X and Linux operating systems but have not been tested.
 
 
 ### Development Setup
-[virtualenv] is probably what you want to use during development for your project.  Once you have Python 2.7 and your virtualenv activated, enter the following command
+Eclipse [PyDev] was used as the primary IDE.
+
+[virtualenv] was also integrated with this project in PyDev.  Once you have Python 2.7 and your virtualenv activated, enter the following command 
+
 `pip install requirements.txt`
-This will download and install all the Python package dependencies that are needed.
+
+This will download and install all the required Python package dependencies that are needed.
+
+
+### Technologies
+Some of the technologies leveraged in this project are the following:
+- Flask
+- AWS Lambda + API Gateway
+- OAuth2
+- Zappa
+- requests
+- WebSockets
+- Selenium
+- Twisted
+- Threading
+- xlwings
+- ctypes
+- SQLite
+- RTD (real-time data for Excel)
+
 
 
 ### License
@@ -54,5 +76,6 @@ Unless required by applicable law or agreed to in writing, software distributed 
 [//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
 
    [xlwings]: <https://www.xlwings.org/>
+   [PyDev]: <http://www.pydev.org/>
    [virtualenv]: <http://docs.python-guide.org/en/latest/dev/virtualenvs/>
    
