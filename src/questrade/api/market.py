@@ -19,8 +19,8 @@
    limitations under the License.
 '''
 
-
-from questrade.api import enumerations, utils
+import questrade.api.utils as utils
+import questrade.api.enumerations as enumerations
 
 
 __api_ops__ = {

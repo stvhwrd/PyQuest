@@ -1,7 +1,7 @@
 '''Stream Observer
 
 @summary: An Observer in the Publish/Subscriber design pattern.  This
-    observer prints the JSON object returned from the stream.
+    observer prints the data returned from the stream.
 
 @see: http://www.questrade.com/api/documentation/streaming
 
@@ -21,7 +21,6 @@
 '''
 
 from Observer import Observer
-import json
 
 class StreamObserver(Observer):
     
@@ -29,10 +28,5 @@ class StreamObserver(Observer):
         if isBinary:
             print("Binary message received: {0} bytes".format(len(payload)))
         else:
-            s = payload.decode('utf8')
-            try:
-                j = json.loads(s)
-                print j
-            except ValueError:
-                print s
+            print payload.decode('utf8')
         

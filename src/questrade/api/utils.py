@@ -18,6 +18,7 @@
 '''
 
 import questrade.token.token_ops as token_ops
+import sqlite.db_utils as db_utils
 import configparser as Config
 import os
 import json
@@ -97,6 +98,34 @@ def call_api(api, params=None):
         logging.info('Body:   \t' + json.dumps(response))
         logging.info('<<<<<<<<<<<<<<<<<<<<<<<<<')
         return response
+
+
+def lookup_symbol_id(symbol):
+    import market as api_market
+    
+    if isinstance(symbol, (int)):
+        return symbol
+
+    if db_utils.is_symbol(symbol):
+        symbol_id = db_utils.get_symbol_id(symbol)
+    else:
+        r = api_market.symbols_search(symbol)
+        stocks = r.get('symbols')
+        if len(stocks) > 0:
+            stock = stocks[0]
+            if 'symbolId' in stock:
+                symbol_id = stock.get('symbolId')
+                db_utils.add_symbol(symbol, symbol_id)
+        
+    return symbol_id
+
+
+def lookup_symbol_ids(symbols):
+    ids = []
+    for s in symbols:
+        ids.append(lookup_symbol_id(s))
+    
+    return ids
 
 
 def iso_today():

@@ -19,7 +19,7 @@
    limitations under the License.
 '''
 
-from questrade.api import utils
+import questrade.api.utils as utils
 import questrade.api.enumerations as enums
 
 

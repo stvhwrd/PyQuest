@@ -2,7 +2,7 @@
 
 @summary: An implementation of Questrade's Streaming services. Capable of
    performing the initial authorization handshake with Questrade servers,
-   obtaining a port and opening a WebSocket to retreive streaming data
+   obtaining a port and opening a WebSocket to retrieve streaming data
    from the port.
 
 @see: http://www.questrade.com/api/documentation/streaming
@@ -26,12 +26,14 @@ from twisted.internet import reactor
 from twisted.internet import error
 from autobahn.twisted.websocket import WebSocketClientFactory, WebSocketClientProtocol, connectWS
 from questrade.token import token_ops
-from questrade.api import utils
 from StreamObserver import StreamObserver
 from StreamPublisher import StreamPublisher
-
 from threading import Thread
 
+import questrade.api.utils as utils
+
+import logging
+logger = logging.getLogger('questrade')
 
 class IQStreamer(WebSocketClientProtocol):
     
@@ -84,7 +86,8 @@ class IQStreamer(WebSocketClientProtocol):
         
             url = api_server + ':' + str(port)
             
-            print('Establishing socket connection:  %s' % url)
+            logging.info('connect_to_socket')
+            logging.info('Establishing socket connection:  %s' % url)
             
             factory = WebSocketClientFactory(url)
             factory.protocol = IQStreamer
@@ -108,7 +111,7 @@ class IQStreamer(WebSocketClientProtocol):
         IQStreamer.connect_to_socket(IQStreamer.create_socket(api, params), observers)
     
     @staticmethod
-    def connect_in_thread(api, params=None, observers=None):
+    def run_in_thread(api, params=None, observers=None):
         t = Thread(target=IQStreamer.connect, args=(api, params, observers))
         t.setDaemon(True)
         return t
@@ -121,11 +124,17 @@ class IQStreamer(WebSocketClientProtocol):
 if __name__ == '__main__':
     import time
     
-    IQStreamer.connect_in_thread('markets/quotes', {'ids': '8049'}).start()
+    IQStreamer.run_in_thread('markets/quotes', {'ids': '8049'}).start()
    
     time.sleep(3)
     IQStreamer.create_socket('markets/quotes', {'ids': '8049,23364'})
     
     time.sleep(3)
+    IQStreamer.run_in_thread('markets/quotes', {'ids': '8049'}).start()
+    
+    time.sleep(3)
     IQStreamer.disconnect_from_thread()
+    
+    
+    
     
