@@ -15,6 +15,7 @@ This package aims to bridge the gap for developers to create pythonic investing 
 
 ### Features
 This package currently includes the following features:
+
  * OAuth 2.0 API requests via HTTPS (TLS)
  * A helper to iniciate the OAuth 2.0 handshaking process with a popup web browser to obtain an access key
  * Optimized calls to request new access tokens via refresh tokens when available
@@ -28,7 +29,7 @@ This package currently includes the following features:
 ### How it works
 This package includes the implemention for an AWS https microservice that I host to retrieve an initial access token.  Once an initial access token is obtained, subsequest Questrade API calls can be made.  This microservice is safe to use and will never store any access tokens on any server.  You can manually use this microservice freely to obtain your personalized access token as follows:
 
- 1. Point your web browser to  https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize
+ 1. Point your web browser to [https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize](https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize)
  2. Login with your Questrade credentials
  3. Accept the Authorization Request to receive an access token from Questrade.
 
@@ -56,6 +57,7 @@ This will download and install all the required Python package dependencies that
 
 ### Technologies
 Some of the technologies leveraged in this project are the following:
+
  - Flask
  - AWS Lambda + API Gateway
  - OAuth2
@@ -73,8 +75,9 @@ Some of the technologies leveraged in this project are the following:
 
 
 ### License
-Licensed under the Apache License, Version 2.0 (the "License"). You may obtain a copy of the License at
-  http://www.apache.org/licenses/LICENSE-2.0
+Licensed under the Apache License, Version 2.0 (the "License"). You may obtain a copy of the License at:
+
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.
 
