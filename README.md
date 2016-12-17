@@ -71,6 +71,7 @@ Some of the technologies leveraged in this project are the following:
  - ctypes
  - SQLite
  - RTD (real-time data for Excel)
+ 
     Note: An efficient RTD Server was created in another project to integrate real-time data from Python, or any other COM application, into Excel.  You can learn more about this project at [Message Queue RTD Server](https://github.com/pcinat/MessageQueueRTDServer)
 
 
