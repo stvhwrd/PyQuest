@@ -97,9 +97,11 @@ def login():
 def refresh_token(refresh_token):
     params = {'refresh_token': refresh_token}
     r = requests.get(refresh_url, params)
-    
-    token = json.loads(r.text)
-    __store_token__(r.text)
+    if r.status_code == requests.codes.ok:
+        token = json.loads(r.text)
+        __store_token__(r.text)
+    else:
+        token = None
     
     return token
 
