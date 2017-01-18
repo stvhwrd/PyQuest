@@ -2,7 +2,7 @@
 A Python wrapper for Questrade's Restful API
 
 
-<a href="https://questrade.com"><img src="https://pbs.twimg.com/profile_images/3121643627/ab59bf9e1b51307feb88a4f07727eff1_400x400.png" width="75" height="75" /></a>  [![Python](https://www.python.org/static/community_logos/python-logo.png)](https://www.python.org/)
+<a href="https://questrade.com"><img src="https://pbs.twimg.com/profile_images/3121643627/ab59bf9e1b51307feb88a4f07727eff1_400x400.png" width="75" height="75" /></a>  [![Python](https://www.python.org/static/community_logos/python-logo.png)](https://www.python.org/)  <a href="https://products.office.com/en-ca/excel"><img src="http://seeklogo.com/images/E/excel-logo-974BFF9CB9-seeklogo.com.png" width="75" height="75" /></a>
 
 
 
