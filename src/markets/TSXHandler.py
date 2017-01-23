@@ -23,6 +23,7 @@ import json
 import requests
 from configparser import SafeConfigParser
 from sqlite import tsx_listings
+from questrade.api import utils
 
 
 class TSXHandler(object):
@@ -48,17 +49,21 @@ class TSXHandler(object):
             
             if 'results' in response:
                 results = response.get('results')
-                for s in results:
+                for result in results:
                     if 'instruments' in s:
-                        instruments = s.get('instruments')
+                        instruments = result.get('instruments')
                         for i in instruments:
-                            symbol = i.get('symbol', '')
-                            name = i.get('name', '')
-                            tsx_listings.add_symbol(symbol, name)
+                            symbol = str(i.get('symbol', ''))
+                            symbol = self.__convert_symbol_for_questrade__(symbol)
+                            name = str(i.get('name', ''))
+                            if self.isValidListing(symbol):
+                                tsx_listings.add_symbol(symbol, name)
                     else:
-                        symbol = s.get('symbol', '')
-                        name = s.get('name', '')
-                        tsx_listings.add_symbol(symbol, name)
+                        symbol = result.get('symbol', '')
+                        symbol = self.__convert_symbol_for_questrade__(symbol)
+                        name = result.get('name', '')
+                        if self.isValidListing(symbol):
+                            tsx_listings.add_symbol(symbol, name)
         
         except ValueError as e:
             response = {"ValueError": e}
@@ -75,6 +80,26 @@ class TSXHandler(object):
     def fetchAllListings(self):
         for o in self.search_options:
             self.fetchListings(o)
+    
+    def isValidListing(self, symbol):
+        symbolId = utils.lookup_symbol_id(symbol)
+        return symbolId != -1
+    
+    def __convert_symbol_for_questrade__(self, symbol):
+        questrade_symbol = str(symbol)
+        
+        if '.DB.' in questrade_symbol:
+            questrade_symbol = questrade_symbol.replace('.DB.','.DB')
+        elif '.PR.' in questrade_symbol:
+            questrade_symbol = questrade_symbol.replace('.PR.','.PR')
+        elif '.PF.' in questrade_symbol:
+            questrade_symbol = questrade_symbol.replace('.PF.','.PF')
+        elif '.WT.' in questrade_symbol:
+            questrade_symbol = questrade_symbol.replace('.WT.','.WT')
+        
+        questrade_symbol += '.TO'
+        
+        return questrade_symbol
 
 
 if __name__ == '__main__':

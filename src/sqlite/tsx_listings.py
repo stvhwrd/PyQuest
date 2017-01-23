@@ -20,6 +20,7 @@
 
 import sqlite3
 import os
+import json
 import datetime
 from sqlite3 import OperationalError
 
@@ -32,7 +33,6 @@ def is_symbol(symbol):
     conn.close()
     return exists
 
-
 def get_symbol_name(symbol):
     conn = __conn_db__()
     cursor = conn.execute('select NAME from TSX_LISTINGS where SYMBOL = "%s"' % symbol.upper())
@@ -41,6 +41,39 @@ def get_symbol_name(symbol):
     conn.close()
     return value
 
+def get_symbol_names():
+    conn = __conn_db__()
+    cursor = conn.execute('select NAME from TSX_LISTINGS')
+    rows = cursor.fetchall()
+    names = []
+    for row in rows:
+        names.append(row[0])
+    conn.close()
+    return names
+
+def get_symbols():
+    conn = __conn_db__()
+    cursor = conn.execute('select SYMBOL from TSX_LISTINGS')
+    rows = cursor.fetchall()
+    symbols = []
+    for row in rows:
+        symbols.append(row[0])
+    conn.close()
+    return symbols
+
+def get_symbols_asJSON():
+    conn = __conn_db__()
+    cursor = conn.execute('select SYMBOL,NAME from TSX_LISTINGS')
+    rows = cursor.fetchall()
+    data = {}
+    results = data['results'] = []
+    for row in rows:
+        symbol = str(row[0])
+        name = str(row[1])
+        results.append({'symbol': symbol, 'name': name})
+    conn.close()
+    data['length'] = len(results)
+    return json.loads(json.dumps(data))
 
 def add_symbol(symbol, name):
     if is_symbol(symbol):
@@ -48,6 +81,11 @@ def add_symbol(symbol, name):
     else:
         __insert_table__(symbol, name)
 
+def get_count():
+    conn = __conn_db__()
+    count = conn.execute('select count(*) from TSX_LISTINGS').fetchone()[0]
+    conn.close()
+    return count
 
 def __conn_db__():
     conn = sqlite3.connect(os.path.join(os.path.abspath(os.path.dirname(__file__)), table_name))
@@ -92,9 +130,8 @@ def __select_table__():
         print 'SYM = %s' % row[0]
         print 'NAME = %s' % row[1]
         print 'CREATE_SECS = %s' % row[2]
-    
     conn.close()
-    
+
 
 def __get_secs_since_epoch__():
     epoch = datetime.datetime.utcfromtimestamp(0)
@@ -108,5 +145,7 @@ def __get_datetime_from_secs__(seconds):
 
 
 if __name__ == '__main__':
-    conn = __conn_db__()
-    conn.close()
+    #print get_symbols()
+    #print get_symbol_names()
+    j = get_symbols_asJSON()
+    print j.get('length')

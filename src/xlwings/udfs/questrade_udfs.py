@@ -22,13 +22,19 @@
 
 import xlwings as xw
 import datetime
+import os
 import dateutil.parser
 import questrade.api.utils as utils
 import questrade.api.account as api_account
 import questrade.api.market as api_market
+import sqlite.tsx_listings as tsx_listings
+import logging
 
 from rtd.Mediator import Mediator
 
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'questrade.log'), level=logging.DEBUG)
+logger = logging.getLogger('questrade')
 
 __date_conversion_keys__ = ('time', 'dividendDate', 'exDate', 'extendedStartTime', 'extendedEndTime', 'startTime', 'endTime', 'start', 'end')
 __unavailable_data__ = 'na'
@@ -114,6 +120,15 @@ def xw_GetCandles(symbol, start_time, end_time, interval, headers):
     candles = r.get('candles')
     
     return __table__(candles, headers)
+
+
+@xw.func
+@xw.arg('headers', ndim=1)
+@xw.ret(expand='table')
+def xw_GetTSXSymbols(headers):
+    s = tsx_listings.get_symbols_asJSON()
+    symbols = s.get('results')
+    return __table__(symbols, headers)
 
 
 @xw.func

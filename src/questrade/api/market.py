@@ -129,16 +129,27 @@ def markets_quotes(ids):
     
     @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-id
     '''
-    syms = ''
-    if isinstance(ids, list):
-        for s in ids:
-            syms += str(s) + ','
-        syms = syms[:-1]  # remove last ,
+    syms = []
+    if isinstance(ids, basestring):
+        syms = syms.split(',')
     else:
         syms = ids
     
-    params = {'ids': syms}
-    return utils.call_api(__api_ops__['quotes'], params)
+    result = {'quotes': []}
+    
+    arry_chunks = __array_chunks(syms, 200)
+    for ids_array in arry_chunks:
+        ids_str = ''
+        for s in ids_array:
+            ids_str += str(s) + ','
+        ids_str = ids_str[:-1]  # remove last ,
+        
+        params = {'ids': ids_str}
+        r = utils.call_api(__api_ops__['quotes'], params)
+        if 'quotes' in r:
+            result['quotes'] = result['quotes'] + r.get('quotes')
+    
+    return result
 
 
 def markets_quotes_options(option_id_filters, ids):
@@ -182,6 +193,10 @@ def markets_candles(id_, start_time=None, end_time=None, interval=None):
               'interval': interval}
     return utils.call_api(__api_ops__['candles'].format(id_), params)
 
+
+def __array_chunks(l, n):
+    n = max(1, n)
+    return (l[i:i+n] for i in xrange(0, len(l), n))
 
 
 if __name__ == '__main__':

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <data-sources>
-	<data-source id="sqlite_jdbc-159ae6ab512-3620c2080734af63" provider="generic" driver="sqlite_jdbc" name="SQLite - symbol_table.db" save-password="true" show-system-objects="true" read-only="false">
-		<connection server="" database="C:\Users\Peter\git\QuestradeAPI_PythonWrapper\src\sqlite\symbol_table.db" url="jdbc:sqlite:C:\Users\Peter\git\QuestradeAPI_PythonWrapper\src\sqlite\symbol_table.db" type="dev"/>
-	</data-source>
-	<data-source id="sqlite_jdbc-159ae7ef043-5e1f18619a727918" provider="generic" driver="sqlite_jdbc" name="SQLite - tsx_listings.db" save-password="true" show-system-objects="true" read-only="false">
+	<data-source id="sqlite_jdbc-159c79cd2da-662439c8abf60e0c" provider="generic" driver="sqlite_jdbc" name="SQLite - tsx_listings.db" save-password="true" show-system-objects="true" read-only="false">
 		<connection server="" database="C:\Users\Peter\git\QuestradeAPI_PythonWrapper\src\sqlite\tsx_listings.db" url="jdbc:sqlite:C:\Users\Peter\git\QuestradeAPI_PythonWrapper\src\sqlite\tsx_listings.db" type="dev"/>
 	</data-source>
 </data-sources>

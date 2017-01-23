@@ -73,6 +73,7 @@ def call_api(api, params=None):
     http_verb = "GET"
     
     response = {}
+    
     try:
         logging.info('>>>>>>>> SENDING >>>>>>>>')
         logging.info('Headers:\t' + json.dumps(headers))
@@ -97,11 +98,12 @@ def call_api(api, params=None):
         logging.info('Headers:\t' + str(r.headers))
         logging.info('Body:   \t' + json.dumps(response))
         logging.info('<<<<<<<<<<<<<<<<<<<<<<<<<')
+        
         return response
 
 
 def lookup_symbol_id(symbol):
-    import market as api_market
+    symbol_id = -1
     
     if isinstance(symbol, (int)):
         return symbol
@@ -109,14 +111,17 @@ def lookup_symbol_id(symbol):
     if db_utils.is_symbol(symbol):
         symbol_id = db_utils.get_symbol_id(symbol)
     else:
-        r = api_market.symbols_search(symbol)
+        params = {'prefix': symbol,
+                  'offset': 0}
+        r = call_api('symbols/search', params)
+        
         stocks = r.get('symbols')
         if len(stocks) > 0:
             stock = stocks[0]
             if 'symbolId' in stock:
                 symbol_id = stock.get('symbolId')
                 db_utils.add_symbol(symbol, symbol_id)
-        
+    
     return symbol_id
 
 
