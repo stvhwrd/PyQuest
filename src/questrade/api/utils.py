@@ -102,7 +102,7 @@ def call_api(api, params=None):
         return response
 
 
-def lookup_symbol_id(symbol):
+def lookup_symbol_id(symbol):    
     symbol_id = -1
     
     if isinstance(symbol, (int)):
@@ -138,6 +138,20 @@ def iso_today():
     return today.isoformat()
 
 
+def iso_today_starttime():
+    today = date.today()
+    t = time(0,0,0)
+    starttime = datetime.combine(today,t).replace(tzinfo=tzlocal())
+    return starttime.isoformat()
+
+
+def iso_today_endtime():
+    today = date.today()
+    t = time(23,59,59)
+    endtime = datetime.combine(today,t).replace(tzinfo=tzlocal())
+    return endtime.isoformat()
+
+
 def iso_time():
     return time.isoformat()
 
@@ -145,3 +159,7 @@ def iso_time():
 def iso_now():
     now = datetime.now(tzlocal())
     return now.isoformat()
+
+
+if __name__ == '__main__':
+    print iso_today_endtime()

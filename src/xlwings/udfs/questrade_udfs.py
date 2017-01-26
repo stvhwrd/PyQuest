@@ -75,6 +75,51 @@ def xw_GetAccountPositions(accountId, headers):
 
 
 @xw.func
+@xw.arg('accountId')
+@xw.arg('headers', ndim=1)
+@xw.ret(expand='table')
+def xw_GetAccountBalances(accountId, headers):   
+    r = api_account.accounts_balances(accountId)
+    balances = r.get('perCurrencyBalances')
+    
+    return __table__(balances, headers)
+
+
+@xw.func
+@xw.arg('accountId')
+@xw.arg('headers', ndim=1)
+@xw.ret(expand='table')
+def xw_GetAccountExecutions(accountId, headers):   
+    r = api_account.accounts_executions(accountId)
+    executions = r.get('executions')
+    
+    return __table__(executions, headers)
+
+
+@xw.func
+@xw.arg('accountId')
+@xw.arg('headers', ndim=1)
+@xw.ret(expand='table')
+def xw_GetAccountOrders(accountId, headers):   
+    r = api_account.accounts_orders(accountId)
+    orders = r.get('orders')
+    
+    return __table__(orders, headers)
+
+
+@xw.func
+@xw.arg('accountId')
+@xw.arg('headers', ndim=1)
+@xw.ret(expand='table')
+def xw_GetAccountActivities(accountId, headers):   
+    r = api_account.accounts_activities(accountId)
+    activities = r.get('activities')
+    if len(activities) == 0:
+        return [['No activities']]
+    return __table__(activities, headers)
+
+
+@xw.func
 @xw.arg('headers', ndim=1)
 @xw.ret(expand='table')
 def xw_GetMarkets(headers):    
@@ -138,7 +183,7 @@ def xw_RTD(symbol, header):
     try:
         rtd = xw.Book().sheets[0].api.Application.WorksheetFunction.RTD("MessageQueue.RTDServer", "", symbol, header)
     except:
-        rtd = 'na'
+        rtd = __unavailable_data__
     Mediator.add_message_queue(symbol, header)
     return rtd
 
@@ -197,3 +242,6 @@ def xw_isoDateTimeToExcel(dt):
     input_secs_pct_of_day = input_secs / 86400.0
     
     return delta_days + input_secs_pct_of_day
+
+if __name__ == '__main__':
+    print xw_GetQuotes(['ZGD.TO','ZIN.TO'], ['lastTradePrice'])

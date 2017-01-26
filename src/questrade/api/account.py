@@ -77,32 +77,34 @@ def accounts_executions(id_, start_time=None, end_time=None):
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-executions
     '''
     if start_time == None:
-        start_time = utils.iso_now()
+        start_time = utils.iso_today_starttime()
     if end_time == None:
-        end_time = utils.iso_now()
+        end_time = utils.iso_today_endtime()
     
     params = {'startTime': start_time,
               'endTime': end_time}
     return utils.call_api(__api_ops__['executions'].format(id_), params)
 
 
-def accounts_orders(id_, start_time=None, end_time=None, state_filter=None, order_id=0):
+def accounts_orders(id_, start_time=None, end_time=None, state_filter=None, order_id=None):
     '''
     Retrieves orders for specified account
     
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-orders
     '''
     if start_time == None:
-        start_time = utils.iso_now()
+        start_time = utils.iso_today_starttime()
     if end_time == None:
-        end_time = utils.iso_now()
+        end_time = utils.iso_today_endtime()
     if state_filter == None:
         state_filter = enums.OrderStateFilterType.All
     
     params = {'startTime': start_time,
               'endTime': end_time,
-              'stateFilter': state_filter,
-              'orderId': order_id}
+              'stateFilter': state_filter}
+    if not order_id == None:
+        params['orderId'] = order_id
+        
     return utils.call_api(__api_ops__['orders'].format(id_), params)
 
 
@@ -113,9 +115,9 @@ def accounts_activities(id_, start_time=None, end_time=None):
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-activities
     '''
     if start_time == None:
-        start_time = utils.iso_now()
+        start_time = utils.iso_today_starttime()
     if end_time == None:
-        end_time = utils.iso_now()
+        end_time = utils.iso_today_endtime()
     
     params = {'startTime': start_time,
               'endTime': end_time}
