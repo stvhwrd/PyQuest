@@ -27,7 +27,7 @@ from sqlite3 import OperationalError
 table_name = 'tsx_listings.db'
 
 
-def is_symbol(symbol):
+def symbol_exists(symbol):
     conn = __conn_db__()
     exists = conn.execute('select count(*) from TSX_LISTINGS where SYMBOL = "%s"' % symbol.upper()).fetchone()[0] != 0
     conn.close()
@@ -38,6 +38,14 @@ def get_symbol_name(symbol):
     cursor = conn.execute('select NAME from TSX_LISTINGS where SYMBOL = "%s"' % symbol.upper())
     row = cursor.fetchone()
     value = row[0] if row is not None else 'na'
+    conn.close()
+    return value
+
+def get_symbol_id(symbol):
+    conn = __conn_db__()
+    cursor = conn.execute('select ID from TSX_LISTINGS where SYMBOL = "%s"' % symbol.upper())
+    row = cursor.fetchone()
+    value = row[0] if row is not None else '-1'
     conn.close()
     return value
 
@@ -61,31 +69,66 @@ def get_symbols():
     conn.close()
     return symbols
 
+def get_symbol_ids():
+    conn = __conn_db__()
+    cursor = conn.execute('select ID from TSX_LISTINGS')
+    rows = cursor.fetchall()
+    ids = []
+    for row in rows:
+        ids.append(row[0])
+    conn.close()
+    return ids
+
 def get_symbols_asJSON():
     conn = __conn_db__()
-    cursor = conn.execute('select SYMBOL,NAME from TSX_LISTINGS')
+    cursor = conn.execute('select SYMBOL,ID,NAME from TSX_LISTINGS')
     rows = cursor.fetchall()
     data = {}
     results = data['results'] = []
     for row in rows:
         symbol = str(row[0])
-        name = str(row[1])
-        results.append({'symbol': symbol, 'name': name})
+        id_ = str(row[1])
+        name = str(row[2])
+        results.append({'symbol': symbol, 'id': id_, 'name': name})
     conn.close()
     data['length'] = len(results)
     return json.loads(json.dumps(data))
 
-def add_symbol(symbol, name):
-    if is_symbol(symbol):
-        __update_table__(symbol, name)
+def add_symbol(symbol, name, id_=None):
+    if symbol_exists(symbol):
+        __update_table__(symbol, name, id_)
     else:
-        __insert_table__(symbol, name)
+        __insert_table__(symbol, name, id_)
 
 def get_count():
     conn = __conn_db__()
     count = conn.execute('select count(*) from TSX_LISTINGS').fetchone()[0]
     conn.close()
     return count
+
+def get_new_count():
+    conn = __conn_db__()
+    count = conn.execute('select count(*) from TSX_LISTINGS where DATETIME(CREATE_TS) == DATETIME(UPDATE_TS)').fetchone()[0]
+    conn.close()
+    return count
+
+def get_updated_count():
+    conn = __conn_db__()
+    count = conn.execute('select count(*) from TSX_LISTINGS where DATETIME(CREATE_TS) < DATETIME(UPDATE_TS)').fetchone()[0]
+    conn.close()
+    return count
+
+def get_orphaned_count():
+    conn = __conn_db__()
+    count = conn.execute('select count(*) from TSX_LISTINGS where DATE(CREATE_TS) < DATE(UPDATE_TS) AND DATE(UPDATE_TS) < (SELECT MAX(DATE(UPDATE_TS)))').fetchone()[0]
+    conn.close()
+    return count
+
+def cleanup():
+    conn = __conn_db__()
+    conn.execute('delete from TSX_LISTINGS where ID = -1')
+    conn.execute('delete from TSX_LISTINGS where DATE(CREATE_TS) < DATE(UPDATE_TS) AND DATE(UPDATE_TS) < (SELECT MAX(DATE(UPDATE_TS)))')
+    conn.close()
 
 def __conn_db__():
     conn = sqlite3.connect(os.path.join(os.path.abspath(os.path.dirname(__file__)), table_name))
@@ -99,20 +142,27 @@ def __conn_db__():
 def __create_table__(conn):
     conn.execute('''create table if not exists  TSX_LISTINGS
                     (SYMBOL    TEXT PRIMARY KEY    NOT NULL,
+                    ID    TEXT    NOT NULL,
                     NAME    TEXT    NOT NULL,
-                    CREATE_SECS    INTEGER)''')
+                    CREATE_TS    TIMESTAMP,
+                    UPDATE_TS    TIMESTAMP)''')
 
 
-def __insert_table__(symbol, name):
+def __insert_table__(symbol, name, id_="-1"):
+    if id_ is None:
+        id_ = "-1"
     conn = __conn_db__()
-    conn.execute('insert into TSX_LISTINGS(SYMBOL,NAME,CREATE_SECS) values("%s", "%s", %u)' % (symbol.upper(), name, __get_secs_since_epoch__()))
+    now = datetime.datetime.now()
+    conn.execute('insert into TSX_LISTINGS(SYMBOL,ID,NAME,CREATE_TS,UPDATE_TS) values(?, ?, ?, ?,?)', (symbol.upper(), id_, name, now, now))
     conn.commit()
     conn.close()
     
 
-def __update_table__(symbol, name):
+def __update_table__(symbol, name, id_="-1"):
+    if id_ is None:
+        id_ = "-1"
     conn = __conn_db__()
-    conn.execute('update TSX_LISTINGS set NAME = "%s", CREATE_SECS = %u where SYMBOL = "%s"' % (name, __get_secs_since_epoch__(), symbol.upper()))
+    conn.execute('update TSX_LISTINGS set ID = ?, NAME = ?, UPDATE_TS = ? where SYMBOL = ?', (id_, name, datetime.datetime.now(), symbol.upper()))
     conn.commit()
     conn.close()
     
@@ -126,26 +176,10 @@ def __delete_table__(symbol):
 
 def __select_table__():
     conn = __conn_db__()
-    for row in conn.execute('select SYMBOL,NAME,CREATE_SECS from TSX_LISTINGS'):
-        print 'SYM = %s' % row[0]
-        print 'NAME = %s' % row[1]
-        print 'CREATE_SECS = %s' % row[2]
+    for row in conn.execute('select SYMBOL,ID,NAME,CREATE_TS,UPDATE_TS from TSX_LISTINGS'):
+        print 'SYM = %s, ID = %s, NAME = %s, CREATE_TS = %s, UPDATE_TS = %s' % (row[0], row[1], row[2], row[3], row[4])
     conn.close()
 
 
-def __get_secs_since_epoch__():
-    epoch = datetime.datetime.utcfromtimestamp(0)
-    now = datetime.datetime.utcnow()
-    delta = now - epoch
-    return delta.total_seconds()
-
-
-def __get_datetime_from_secs__(seconds):
-    return datetime.datetime.utcfromtimestamp(seconds)
-
-
 if __name__ == '__main__':
-    #print get_symbols()
-    #print get_symbol_names()
-    j = get_symbols_asJSON()
-    print j.get('length')
+    print get_symbols_asJSON()

@@ -244,4 +244,4 @@ def xw_isoDateTimeToExcel(dt):
     return delta_days + input_secs_pct_of_day
 
 if __name__ == '__main__':
-    print xw_GetQuotes(['ZGD.TO','ZIN.TO'], ['lastTradePrice'])
+    print xw_GetQuotes(['RY.TO','SHOP.TO'], ['lastTradePrice'])

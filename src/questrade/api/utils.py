@@ -31,6 +31,8 @@ from dateutil.tz import tzlocal
 config = Config.ConfigParser()
 config.read(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'config.cfg'))
 api_version = config.get('Questrade', 'api_version')
+log_on = config.getboolean('Properties', 'log_on')
+
 
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', filename=os.path.join(os.path.abspath(os.path.dirname(__file__)), 'questrade.log'), level=logging.DEBUG)
@@ -62,7 +64,8 @@ def call_api(api, params=None):
     token = get_valid_token()
     if token == None:
         response = {'message': 'no token'}
-        logging.info(json.dumps(response))
+        if log_on:
+            logging.info(json.dumps(response))
         return response
     
     authorization_value = token_ops.get_token_type(token) + ' ' + token_ops.get_access_token(token)
@@ -75,11 +78,12 @@ def call_api(api, params=None):
     response = {}
     
     try:
-        logging.info('>>>>>>>> SENDING >>>>>>>>')
-        logging.info('Headers:\t' + json.dumps(headers))
-        logging.info('Params: \t' + json.dumps(params))
-        logging.info('Calling:\t' + http_verb + ' ' + uri)
-        logging.info('>>>>>>>>>>>>>>>>>>>>>>>>>')
+        if log_on:
+            logging.info('>>>>>>>> SENDING >>>>>>>>')
+            logging.info('Headers:\t' + json.dumps(headers))
+            logging.info('Params: \t' + json.dumps(params))
+            logging.info('Calling:\t' + http_verb + ' ' + uri)
+            logging.info('>>>>>>>>>>>>>>>>>>>>>>>>>')
         
         r = requests.get(uri, headers=headers, params=params)
         response = r.json()
@@ -94,16 +98,17 @@ def call_api(api, params=None):
         response = {"RequestException": e}
         
     finally:
-        logging.info('<<<<<<<< RECEIVING <<<<<<')
-        logging.info('Headers:\t' + str(r.headers))
-        logging.info('Body:   \t' + json.dumps(response))
-        logging.info('<<<<<<<<<<<<<<<<<<<<<<<<<')
+        if log_on:
+            logging.info('<<<<<<<< RECEIVING <<<<<<')
+            logging.info('Headers:\t' + str(r.headers))
+            logging.info('Body:   \t' + json.dumps(response))
+            logging.info('<<<<<<<<<<<<<<<<<<<<<<<<<')
         
         return response
 
 
 def lookup_symbol_id(symbol):    
-    symbol_id = -1
+    symbol_id = "-1"
     
     if isinstance(symbol, (int)):
         return symbol
@@ -159,7 +164,3 @@ def iso_time():
 def iso_now():
     now = datetime.now(tzlocal())
     return now.isoformat()
-
-
-if __name__ == '__main__':
-    print iso_today_endtime()
