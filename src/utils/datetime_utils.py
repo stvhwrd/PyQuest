@@ -20,6 +20,7 @@
 
 from datetime import datetime, date, time
 from dateutil.tz import tzlocal
+import dateutil.parser
 
 def datetime_now():
     return datetime.now()
@@ -62,3 +63,9 @@ def iso_time():
 def iso_now():
     now = datetime.now(tzlocal())
     return now.isoformat()
+
+def iso_to_datetime(iso_str):
+    return dateutil.parser.parse(iso_str)
+
+def print_datetime(dt_str):
+    return dt_str.strftime("%A %B %d %Y  %I:%M:%S %p %Z")
