@@ -51,7 +51,7 @@ the following call:
 Note: If you don't already have an access token, the above all will
 automatically call the right procedure to get one for you.
 '''
-    raw_input("\Press enter key to continue... ")
+    raw_input("\nPress enter key to continue... ")
     r = account.time()
     print "Questrade API responded with JSON:\n%s\n" % r
     t = r.get('time','unknown')
@@ -62,7 +62,7 @@ Next let's list the types of accounts you have with Questrade.  To do so
 we make the following call:
 \taccount.accounts()
 '''
-    raw_input("\Press enter key to continue... ")
+    raw_input("\nPress enter key to continue... ")
     
     r = account.accounts()
     print "Questrade API responded with JSON:\n%s\n" % r
