@@ -18,11 +18,11 @@
    limitations under the License.
 '''
 
-import datetime
-
+from datetime import datetime, date, time
+from dateutil.tz import tzlocal
 
 def datetime_now():
-    return datetime.datetime.now()
+    return datetime.now()
 
 def datetime_delta_days(d1, d2):
     delta_days = 0
@@ -32,10 +32,33 @@ def datetime_delta_days(d1, d2):
     return delta_days
 
 def get_secs_since_epoch():
-    epoch = datetime.datetime.utcfromtimestamp(0)
+    epoch = datetime.utcfromtimestamp(0)
     now = datetime.datetime.utcnow()
     delta = now - epoch
     return delta.total_seconds()
 
 def get_datetime_from_secs(seconds):
-    return datetime.datetime.utcfromtimestamp(seconds)
+    return datetime.utcfromtimestamp(seconds)
+
+def iso_today():
+    today = date.today()
+    return today.isoformat()
+
+def iso_today_starttime():
+    today = date.today()
+    t = time(0,0,0)
+    starttime = datetime.combine(today,t).replace(tzinfo=tzlocal())
+    return starttime.isoformat()
+
+def iso_today_endtime():
+    today = date.today()
+    t = time(23,59,59)
+    endtime = datetime.combine(today,t).replace(tzinfo=tzlocal())
+    return endtime.isoformat()
+
+def iso_time():
+    return time.isoformat()
+
+def iso_now():
+    now = datetime.now(tzlocal())
+    return now.isoformat()

@@ -21,7 +21,7 @@
 '''
 
 
-import questrade.api.utils as utils
+from questrade.api import api_utils
 from questrade.api.streamer.IQStreamer import IQStreamer
 from RTDStreamObserver import RTDStreamObserver
 from rtd.RTDMessageQueue import RTDMessageQueue
@@ -34,7 +34,7 @@ class Mediator(object):
     
     @staticmethod
     def add_message_queue(symbol, header):
-        _id = utils.lookup_symbol_id(symbol)
+        _id = api_utils.lookup_symbol_id(symbol)
         tup = (_id, symbol, header)
         
         mq_name = symbol + '_' + header
@@ -49,7 +49,7 @@ class Mediator(object):
         
     @staticmethod
     def remove_message_queue(symbol, header):
-        _id = utils.lookup_symbol_id(symbol)
+        _id = api_utils.lookup_symbol_id(symbol)
         tup = (_id, symbol, header)
         keys = (k for (k, v) in Mediator.dict_rtds.items() if k == tup)
         for k in keys:

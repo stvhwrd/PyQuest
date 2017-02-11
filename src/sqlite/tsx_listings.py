@@ -21,8 +21,8 @@
 import sqlite3
 import os
 import json
-import datetime
 from sqlite3 import OperationalError
+from utils import datetime_utils
 
 table_name = 'tsx_listings.db'
 
@@ -152,7 +152,7 @@ def __insert_table__(symbol, name, id_="-1"):
     if id_ is None:
         id_ = "-1"
     conn = __conn_db__()
-    now = datetime.datetime.now()
+    now = datetime_utils.datetime_now()
     conn.execute('insert into TSX_LISTINGS(SYMBOL,ID,NAME,CREATE_TS,UPDATE_TS) values(?, ?, ?, ?,?)', (symbol.upper(), id_, name, now, now))
     conn.commit()
     conn.close()
@@ -162,7 +162,7 @@ def __update_table__(symbol, name, id_="-1"):
     if id_ is None:
         id_ = "-1"
     conn = __conn_db__()
-    conn.execute('update TSX_LISTINGS set ID = ?, NAME = ?, UPDATE_TS = ? where SYMBOL = ?', (id_, name, datetime.datetime.now(), symbol.upper()))
+    conn.execute('update TSX_LISTINGS set ID = ?, NAME = ?, UPDATE_TS = ? where SYMBOL = ?', (id_, name, datetime_utils.datetime_now(), symbol.upper()))
     conn.commit()
     conn.close()
     

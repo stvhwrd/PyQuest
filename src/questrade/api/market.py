@@ -19,8 +19,9 @@
    limitations under the License.
 '''
 
-import questrade.api.utils as utils
+import api_utils
 import questrade.api.enumerations as enumerations
+from utils import datetime_utils
 
 
 __api_ops__ = {
@@ -43,7 +44,7 @@ def symbol(id_):
     
     @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-id
     '''
-    return utils.call_api(__api_ops__['symbol'].format(id_))
+    return api_utils.call_api(__api_ops__['symbol'].format(id_))
 
 
 def symbolIds(ids):
@@ -62,7 +63,7 @@ def symbolIds(ids):
         syms = ids
         
     params = {'ids': syms}
-    return utils.call_api(__api_ops__['symbols'], params)
+    return api_utils.call_api(__api_ops__['symbols'], params)
 
 
 def symbolNames(names):
@@ -81,7 +82,7 @@ def symbolNames(names):
         syms = names
         
     params = {'names': syms}
-    return utils.call_api(__api_ops__['symbols'], params)
+    return api_utils.call_api(__api_ops__['symbols'], params)
 
 
 def symbols_search(prefix, offset='0'):
@@ -92,7 +93,7 @@ def symbols_search(prefix, offset='0'):
     '''
     params = {'prefix': prefix,
               'offset': offset}
-    return utils.call_api(__api_ops__['search'], params)
+    return api_utils.call_api(__api_ops__['search'], params)
 
 
 def symbols_options(id_):
@@ -101,7 +102,7 @@ def symbols_options(id_):
     
     @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/symbols-id-options
     '''
-    return utils.call_api(__api_ops__['options'].format(id_))
+    return api_utils.call_api(__api_ops__['options'].format(id_))
 
 
 def markets():
@@ -110,7 +111,7 @@ def markets():
     
     @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets
     '''
-    return utils.call_api(__api_ops__['markets'])
+    return api_utils.call_api(__api_ops__['markets'])
 
 
 def markets_quote(id_):
@@ -119,7 +120,7 @@ def markets_quote(id_):
     
     @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-id
     '''
-    return utils.call_api(__api_ops__['quote'].format(id_))
+    return api_utils.call_api(__api_ops__['quote'].format(id_))
 
 
 def markets_quotes(ids):
@@ -145,7 +146,7 @@ def markets_quotes(ids):
         ids_str = ids_str[:-1]  # remove last ,
         
         params = {'ids': ids_str}
-        r = utils.call_api(__api_ops__['quotes'], params)
+        r = api_utils.call_api(__api_ops__['quotes'], params)
         if 'quotes' in r:
             result['quotes'] = result['quotes'] + r.get('quotes')
     
@@ -161,7 +162,7 @@ def markets_quotes_options(option_id_filters, ids):
     '''
     params = {'filters': option_id_filters,
               'ids': ids}
-    return utils.call_api(__api_ops__['moptions'], params)
+    return api_utils.call_api(__api_ops__['moptions'], params)
 
 
 def markets_quotes_strategies():
@@ -171,7 +172,7 @@ def markets_quotes_strategies():
     @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-quotes-strategies
     @todo: Need to finish implementation
     '''
-    return utils.call_api(__api_ops__['strategies'])
+    return api_utils.call_api(__api_ops__['strategies'])
 
 
 def markets_candles(id_, start_time=None, end_time=None, interval=None):
@@ -182,22 +183,18 @@ def markets_candles(id_, start_time=None, end_time=None, interval=None):
     @see: http://www.questrade.com/api/documentation/rest-operations/market-calls/markets-candles-id
     '''
     if start_time == None:
-        start_time = utils.iso_now()
+        start_time = datetime_utils.iso_now()
     if end_time == None:
-        end_time = utils.iso_now()
+        end_time = datetime_utils.iso_now()
     if interval == None:
         interval = enumerations.HistoricalDataGranularity.FiveMinutes
     
     params = {'startTime': start_time,
               'endTime': end_time,
               'interval': interval}
-    return utils.call_api(__api_ops__['candles'].format(id_), params)
+    return api_utils.call_api(__api_ops__['candles'].format(id_), params)
 
 
 def __array_chunks(l, n):
     n = max(1, n)
     return (l[i:i+n] for i in xrange(0, len(l), n))
-
-
-if __name__ == '__main__':
-    markets_quotes('8049')

@@ -18,14 +18,12 @@
 '''
 
 import questrade.token.token_ops as token_ops
-import sqlite.db_utils as db_utils
+import sqlite.symbol_listings as symbol_listings
 import configparser as Config
 import os
 import json
 import requests
 import logging
-from datetime import datetime, date, time
-from dateutil.tz import tzlocal
 
 
 config = Config.ConfigParser()
@@ -113,8 +111,8 @@ def lookup_symbol_id(symbol):
     if isinstance(symbol, (int)):
         return symbol
 
-    if db_utils.is_symbol(symbol):
-        symbol_id = db_utils.get_symbol_id(symbol)
+    if symbol_listings.is_symbol(symbol):
+        symbol_id = symbol_listings.get_symbol_id(symbol)
     else:
         params = {'prefix': symbol,
                   'offset': 0}
@@ -125,7 +123,7 @@ def lookup_symbol_id(symbol):
             stock = stocks[0]
             if 'symbolId' in stock:
                 symbol_id = stock.get('symbolId')
-                db_utils.add_symbol(symbol, symbol_id)
+                symbol_listings.add_symbol(symbol, symbol_id)
     
     return symbol_id
 
@@ -136,31 +134,3 @@ def lookup_symbol_ids(symbols):
         ids.append(lookup_symbol_id(s))
     
     return ids
-
-
-def iso_today():
-    today = date.today()
-    return today.isoformat()
-
-
-def iso_today_starttime():
-    today = date.today()
-    t = time(0,0,0)
-    starttime = datetime.combine(today,t).replace(tzinfo=tzlocal())
-    return starttime.isoformat()
-
-
-def iso_today_endtime():
-    today = date.today()
-    t = time(23,59,59)
-    endtime = datetime.combine(today,t).replace(tzinfo=tzlocal())
-    return endtime.isoformat()
-
-
-def iso_time():
-    return time.isoformat()
-
-
-def iso_now():
-    now = datetime.now(tzlocal())
-    return now.isoformat()

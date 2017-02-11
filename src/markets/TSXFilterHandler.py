@@ -24,15 +24,15 @@ from sqlite import tsx_listings
 import numpy as np
 
 
+volume_percentile_threshold = 90
+largecap_percentile_threshold = 90
+opengapping_percentile_threshold = 90
+daymovers_percentile_threshold = 90
+
 class TSXFilterHandler(object):
 
     market_data = {}
     quote_data = {}
-    
-    __volume_percentile_threshold = 90
-    __largecap_percentile_threshold = 90
-    __opengapping_percentile_threshold = 90
-    __daymovers_percentile_threshold = 90
 
     def __init__(self):
         pass
@@ -48,6 +48,7 @@ class TSXFilterHandler(object):
                         self.market_data[k].append(v)
                     else:
                         self.market_data.update({k:[v]})
+        return self.market_data
     
     def fetch_quote_data(self):
         ids = tsx_listings.get_symbol_ids()
@@ -60,6 +61,7 @@ class TSXFilterHandler(object):
                         self.quote_data[k].append(v)
                     else:
                         self.quote_data.update({k:[v]})
+        return self.quote_data
                     
     def get_market_data(self, key):
         a = self.market_data[key]
@@ -71,29 +73,29 @@ class TSXFilterHandler(object):
         a = [i if i is not None else 0 for i in a] # replace all None elements with 0
         return np.array(a)
         
-    def get_averageVol20Days_stocks(self):
+    def get_averageVol20Days_stocks(self, percentile=volume_percentile_threshold):
         s = self.get_market_data('symbol')
         a = self.get_market_data('averageVol20Days')
         
-        percentile_threshold = np.percentile(a, self.__volume_percentile_threshold)
+        percentile_threshold = np.percentile(a, percentile)
         
         s = s[np.where(a >= percentile_threshold)]
         return s
     
-    def get_interdayvolume_stocks(self):
+    def get_interdayvolume_stocks(self, percentile=volume_percentile_threshold):
         s = self.get_market_data('symbol')
         a = self.get_quote_data('volume')
         
-        percentile_threshold = np.percentile(a, self.__volume_percentile_threshold)
+        percentile_threshold = np.percentile(a, percentile)
         
         s = s[np.where(a >= percentile_threshold)]
         return s
     
-    def get_largecap_stocks(self):
+    def get_largecap_stocks(self, percentile=largecap_percentile_threshold):
         s = self.get_market_data('symbol')
         a = self.get_market_data('marketCap')
         
-        percentile_threshold = np.percentile(a, self.__largecap_percentile_threshold)
+        percentile_threshold = np.percentile(a, percentile)
         
         s = s[np.where(a >= percentile_threshold)]
         return s
@@ -119,53 +121,47 @@ class TSXFilterHandler(object):
         s = s[np.where(a == industrygroup)]
         return s
     
-    def get_opengapping_stocks(self):
+    def get_opengapping_stocks(self, percentile=opengapping_percentile_threshold):
         s = self.get_market_data('symbol')
         p = self.get_market_data('prevDayClosePrice')
         o = self.get_quote_data('openPrice')
         
         x = np.nonzero(o)
+        if len(x) == 0:
+            return np.array([])
+        
         s = s[x]
         p = p[x]
         o = o[x]
         
-        diffs = np.abs(o - p)
-        
-        x = np.nonzero(diffs)
-        s = s[x]
-        p = p[x]
-        diffs = diffs[x]
-        
-        diffs = np.divide(diffs, p)
+        logP = np.log(p)
+        logO = np.log(o)
+        diffs = np.abs(logO - logP)
                 
-        percentile_threshold = np.percentile(diffs, self.__opengapping_percentile_threshold)
+        percentile_threshold = np.percentile(diffs, percentile)
         
-        s = s[np.where(diffs >= percentile_threshold)]
-        return s
+        return s[np.where(diffs >= percentile_threshold)]
     
-    def get_daymovers_stocks(self):
+    def get_daymovers_stocks(self, percentile=daymovers_percentile_threshold):
         s = self.get_market_data('symbol')
         o = self.get_quote_data('openPrice')
         l = self.get_quote_data('lastTradePrice')
         
         x = np.nonzero(o)
+        if len(x) == 0:
+            return np.array([])
+        
         s = s[x]
         o = o[x]
         l = l[x]
         
-        diffs = np.abs(l - o)
-        
-        x = np.nonzero(diffs)
-        s = s[x]
-        o = o[x]
-        diffs = diffs[x]
-        
-        diffs = np.divide(diffs, o)
+        logO = np.log(o)
+        logL = np.log(l)
+        diffs = np.abs(logL - logO)
                 
-        percentile_threshold = np.percentile(diffs, self.__daymovers_percentile_threshold)
+        percentile_threshold = np.percentile(diffs, percentile)
         
-        s = s[np.where(diffs >= percentile_threshold)]
-        return s
+        return s[np.where(diffs >= percentile_threshold)]
     
     @staticmethod
     def intersection(*args):
@@ -179,22 +175,28 @@ class TSXFilterHandler(object):
         return r
 
 
-
 if __name__ == '__main__':
     t = TSXFilterHandler()
+    
     t.fetch_market_data()
     t.fetch_quote_data()
     
-    a = t.get_largecap_stocks()
+    #a = t.get_largecap_stocks()
     b = t.get_minprice_stocks(10)
-    c = t.get_averageVol20Days_stocks()
+    #c = t.get_averageVol20Days_stocks()
     d = t.get_interdayvolume_stocks()
     e = t.get_opengapping_stocks()
     f = t.get_daymovers_stocks()
     
-    z = TSXFilterHandler.intersection(b,d,f)
+    b_n_d = TSXFilterHandler.intersection(b,e)
+    
+    print "Stocks with an opening gap:"
+    z = TSXFilterHandler.intersection(b,e)
     z = np.sort(z)
     print z
-   
     
+    print "Stocks with big daily moves:"
+    z = TSXFilterHandler.intersection(b_n_d,f)
+    z = np.sort(z)
+    print z
     

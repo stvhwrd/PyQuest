@@ -24,7 +24,7 @@ import xlwings as xw
 import datetime
 import os
 import dateutil.parser
-import questrade.api.utils as utils
+from questrade.api import api_utils
 import questrade.api.account as api_account
 import questrade.api.market as api_market
 import sqlite.tsx_listings as tsx_listings
@@ -212,14 +212,14 @@ def xw_GetStockId(symbol):
 @xw.func
 @xw.arg('symbol')
 def xw_LookupSymbolId(symbol):
-    return utils.lookup_symbol_id(symbol)
+    return api_utils.lookup_symbol_id(symbol)
 
 
 @xw.func
 @xw.arg('symbols', ndim=1)
 @xw.ret(expand='right')
 def xw_LookupSymbolIds(symbols):
-    return utils.lookup_symbol_ids(symbols)
+    return api_utils.lookup_symbol_ids(symbols)
 
 
 @xw.func
@@ -242,6 +242,3 @@ def xw_isoDateTimeToExcel(dt):
     input_secs_pct_of_day = input_secs / 86400.0
     
     return delta_days + input_secs_pct_of_day
-
-if __name__ == '__main__':
-    print xw_GetQuotes(['RY.TO','SHOP.TO'], ['lastTradePrice'])

@@ -19,8 +19,9 @@
    limitations under the License.
 '''
 
-import questrade.api.utils as utils
+import api_utils
 import questrade.api.enumerations as enums
+from utils import datetime_utils
 
 
 __api_ops__ = {
@@ -40,7 +41,7 @@ def time():
     
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/time
     '''
-    return utils.call_api(__api_ops__['time'])
+    return api_utils.call_api(__api_ops__['time'])
 
 
 def accounts():
@@ -49,7 +50,7 @@ def accounts():
     
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts
     '''
-    return utils.call_api(__api_ops__['accounts'])
+    return api_utils.call_api(__api_ops__['accounts'])
 
 
 def accounts_positions(id_):
@@ -58,7 +59,7 @@ def accounts_positions(id_):
     
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-positions
     '''
-    return utils.call_api(__api_ops__['positions'].format(id_))
+    return api_utils.call_api(__api_ops__['positions'].format(id_))
 
 
 def accounts_balances(id_):
@@ -67,7 +68,7 @@ def accounts_balances(id_):
     
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-balances
     '''
-    return utils.call_api(__api_ops__['balances'].format(id_))
+    return api_utils.call_api(__api_ops__['balances'].format(id_))
 
 
 def accounts_executions(id_, start_time=None, end_time=None):
@@ -77,13 +78,13 @@ def accounts_executions(id_, start_time=None, end_time=None):
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-executions
     '''
     if start_time == None:
-        start_time = utils.iso_today_starttime()
+        start_time = datetime_utils.iso_today_starttime()
     if end_time == None:
-        end_time = utils.iso_today_endtime()
+        end_time = datetime_utils.iso_today_endtime()
     
     params = {'startTime': start_time,
               'endTime': end_time}
-    return utils.call_api(__api_ops__['executions'].format(id_), params)
+    return api_utils.call_api(__api_ops__['executions'].format(id_), params)
 
 
 def accounts_orders(id_, start_time=None, end_time=None, state_filter=None, order_id=None):
@@ -93,9 +94,9 @@ def accounts_orders(id_, start_time=None, end_time=None, state_filter=None, orde
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-orders
     '''
     if start_time == None:
-        start_time = utils.iso_today_starttime()
+        start_time = datetime_utils.iso_today_starttime()
     if end_time == None:
-        end_time = utils.iso_today_endtime()
+        end_time = datetime_utils.iso_today_endtime()
     if state_filter == None:
         state_filter = enums.OrderStateFilterType.All
     
@@ -105,7 +106,7 @@ def accounts_orders(id_, start_time=None, end_time=None, state_filter=None, orde
     if not order_id == None:
         params['orderId'] = order_id
         
-    return utils.call_api(__api_ops__['orders'].format(id_), params)
+    return api_utils.call_api(__api_ops__['orders'].format(id_), params)
 
 
 def accounts_activities(id_, start_time=None, end_time=None):
@@ -115,14 +116,10 @@ def accounts_activities(id_, start_time=None, end_time=None):
     @see: http://www.questrade.com/api/documentation/rest-operations/account-calls/accounts-id-activities
     '''
     if start_time == None:
-        start_time = utils.iso_today_starttime()
+        start_time = datetime_utils.iso_today_starttime()
     if end_time == None:
-        end_time = utils.iso_today_endtime()
+        end_time = datetime_utils.iso_today_endtime()
     
     params = {'startTime': start_time,
               'endTime': end_time}
-    return utils.call_api(__api_ops__['activities'].format(id_), params)
-
-
-if __name__ == '__main__':
-    time()
+    return api_utils.call_api(__api_ops__['activities'].format(id_), params)

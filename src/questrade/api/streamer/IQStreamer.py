@@ -30,7 +30,7 @@ from StreamObserver import StreamObserver
 from StreamPublisher import StreamPublisher
 from threading import Thread
 
-import questrade.api.utils as utils
+import questrade.api.api_utils as api_utils
 
 import logging
 logger = logging.getLogger('questrade')
@@ -63,7 +63,7 @@ class IQStreamer(WebSocketClientProtocol):
 
     @staticmethod
     def create_socket(api, params=None):
-        r = utils.call_api(api, IQStreamer._params_streaming(params))
+        r = api_utils.call_api(api, IQStreamer._params_streaming(params))
         
         if 'streamPort' in r:
             stream_port = r.get('streamPort')
@@ -127,14 +127,11 @@ if __name__ == '__main__':
     IQStreamer.run_in_thread('markets/quotes', {'ids': '8049'}).start()
    
     time.sleep(3)
-    IQStreamer.create_socket('markets/quotes', {'ids': '8049,23364'})
+    IQStreamer.create_socket('markets/quotes', {'ids': '8049'})
     
     time.sleep(3)
     IQStreamer.run_in_thread('markets/quotes', {'ids': '8049'}).start()
     
     time.sleep(3)
     IQStreamer.disconnect_from_thread()
-    
-    
-    
     
