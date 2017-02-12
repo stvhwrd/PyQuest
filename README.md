@@ -12,28 +12,37 @@ A Python wrapper for Questrade's Restful API
 
 This package aims to bridge the gap for developers to create pythonic investing applications with Questrade's Restful API.
 
+The development of this project has progressed to a point where most of Questrade's API calls can easily be made from Python.  It allows Python developers to easily build ontop of this package and focus on creating trading strategies and algos.  Outstanding API calls are Python wrappers to make Orders calls used to buy and sell securities.
 
 ### Features
-This package currently includes the following features:
+Some of the features this package contains are as follows:
 
  * OAuth 2.0 API requests via HTTPS (TLS)
- * A helper to iniciate the OAuth 2.0 handshaking process with a popup web browser to obtain an access key
+ * Wrappers for all Questrade Account and Market calls that automatically handle making authorized requests
  * Optimized calls to request new access tokens via refresh tokens when available
  * Error handling and logging
- * Wrappers for all Questrade Account and Market calls
  * Streaming quotes
- * [xlwings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from Microsoft Excel
+ * [xlwings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from within Microsoft Excel
  * A local SQLite database to minimize API callouts when possible so that rate limits are not hit
 
 
 ### How it works
-This package includes the implemention for an AWS https microservice that I host to retrieve an initial access token.  Once an initial access token is obtained, subsequest Questrade API calls can be made.  This microservice is safe to use and will never store any access tokens on any server.  You can manually use this microservice freely to obtain your personalized access token as follows:
+Questrade REST APIs require an access token to be obtained from their servers first before making any subequent API requests.  This package automatically handles that for you whenever one of the Python wrapped Questrade APIs is called.  The initial access token can only be retrieved through the OAuth2 handshake.  Therefore, if your machine has not yet retrieved an access token, it will launch a web browser directed at the Questrade login page where you will have to enter your Questrade Id and password.  You'll then be prompted to accept the Authorization Request to receive your initial access token from Questrade.  Once the access token is retrieved, the intended Questrade API call will then occur.  Subsequest API calls will then automatically refresh the access token whenever needed to avoid having to re-enter a Questrade Id and password.
 
+You can also obtain your initial access token manually by following these steps:
  1. Point your web browser to [https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize](https://n0mq97v6uj.execute-api.us-east-1.amazonaws.com/dev/authorize)
  2. Login with your Questrade credentials
  3. Accept the Authorization Request to receive an access token from Questrade.
 
-The above steps are programmatically followed when leveraging the Python API wrappers in this package.  In addition, when using this framework, new access tokens are automatically obtained after they've expired by using a refresh token when possible.
+The above steps are programmatically followed when leveraging the Python API wrappers in this package.
+
+
+### Getting Started
+This package contains two getting started modules to help you get more familiar with how you can leverage the Python wrapped Questrade API calls.
+ 1. Module `getting_started_access_tokens.py` walks through an example of how access tokens and refresh tokens are retrieved in this package. Although access tokens are automatically retrieved when making Python wrapped Questrade API calls, it is useful to be  knowledgeable with how this package handles it.
+ 2. Module `getting_started_api_calls` walks through an example of how Python wrapped Questrade API calls are made.
+
+Once you see how easy it is to make Questrade API calls through this Python package, you can build upon it and concentrate on developing your own trading strategies and algos.
 
 
 ### Requirements
@@ -42,22 +51,22 @@ The above steps are programmatically followed when leveraging the Python API wra
 
 
 ### Operating Systems
-This package has been tested to work on Windows 7 or above.  Most of the features will also work on Mac OS X and Linux operating systems but have not been tested.
+This package has been tested to work on Windows 7 and above.  Most of the features will also work on Mac OS X and Linux operating systems but have not been tested as of yet.
 
 
 ### Development Setup
 Eclipse [PyDev] was used as the primary IDE.
 
-[virtualenv] was also integrated with this project in PyDev.  Once you have Python 2.7 and your virtualenv activated, enter the following command 
+[virtualenv] was also integrated with this project in PyDev.  Once you have Python 2.7 installed and your virtualenv activated, enter the following command to download and install all the required Python dependencies that are needed.
 
 `pip install requirements.txt`
-
-This will download and install all the required Python package dependencies that are needed.
 
 
 ### Technologies
 Some of the technologies leveraged in this project are the following:
 
+ - numpy
+ - pandas
  - Flask
  - AWS Lambda + API Gateway
  - OAuth2
@@ -72,7 +81,7 @@ Some of the technologies leveraged in this project are the following:
  - SQLite
  - RTD (real-time data for Excel)
  
-    Note: An efficient RTD Server was created in another project to integrate real-time data from Python, or any other COM application, into Excel.  You can learn more about this project at [Message Queue RTD Server](https://github.com/pcinat/MessageQueueRTDServer)
+    Note: An efficient RTD Server was created in another project to integrate real-time data from Python, or any other COM applications, into Excel.  You can learn more about that project at [Message Queue RTD Server](https://github.com/pcinat/MessageQueueRTDServer)
 
 
 
