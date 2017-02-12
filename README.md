@@ -12,7 +12,7 @@ A Python wrapper for Questrade's Restful API
 
 This package aims to bridge the gap for developers to create pythonic investing applications with Questrade's Restful API.
 
-The development of this project has progressed to a point where most of Questrade's API calls can easily be made from Python.  It allows Python developers to easily build ontop of this package and focus on creating trading strategies and algos.  Outstanding API calls are Python wrappers to make Orders calls used to buy and sell securities.
+The development of this project has progressed to a point where most of Questrade's API calls can now be easily made from Python.  It allows Python developers to easily build upon this package and focus on creating trading strategies and algos.  The only outstanding API calls that require Python wrappers are Orders calls used to buy and sell securities.  These will come in time.
 
 ### Features
 Some of the features this package contains are as follows:
@@ -23,7 +23,7 @@ Some of the features this package contains are as follows:
  * Error handling and logging
  * Streaming quotes
  * [xlwings] User Defined Functions (UDFs) that can call all Python wrapped Questrade API's from within Microsoft Excel
- * A local SQLite database to minimize API callouts when possible so that rate limits are not hit
+ * A local SQLite database to locally store symbol ids as to minimize API callouts when possible so that rate limits are not hit
 
 
 ### How it works
