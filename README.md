@@ -59,7 +59,7 @@ Eclipse [PyDev] was used as the primary IDE.
 
 [virtualenv] was also integrated with this project in PyDev.  Once you have Python 2.7 installed and your virtualenv activated, enter the following command to download and install all the required Python dependencies that are needed.
 
-`pip install requirements.txt`
+`pip install -r requirements.txt`
 
 
 ### Technologies
