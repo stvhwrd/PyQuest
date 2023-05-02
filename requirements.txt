@@ -14,7 +14,7 @@ cryptography==1.6
 cycler==0.10.0
 docutils==0.12
 enum34==1.1.6
-Flask==0.11.1
+Flask==2.3.2
 functools32==3.2.3.post2
 futures==3.0.5
 hjson==2.0.2
